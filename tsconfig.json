@@ -2,6 +2,7 @@
   "compilerOptions": {
     "lib": ["ES2022"],
     "module": "ESNext",
+    "target": "esnext",
     "noEmit": true,
     "strict": true,
     "skipLibCheck": true,
@@ -9,9 +10,9 @@
     "resolveJsonModule": true,
     "moduleResolution": "bundler",
     "useDefineForClassFields": true,
-    "allowImportingTsExtensions": true,
+    "allowImportingTsExtensions": false,
     "verbatimModuleSyntax": true
   },
   "include": ["src"],
-  "exclude": ["**/*/*.test.ts"]
+  "exclude": ["**/*.test.ts"]
 }
