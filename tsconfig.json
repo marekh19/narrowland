@@ -9,7 +9,9 @@
     "resolveJsonModule": true,
     "moduleResolution": "bundler",
     "useDefineForClassFields": true,
-    "allowImportingTsExtensions": true
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": true
   },
-  "include": ["src"]
+  "include": ["src"],
+  "exclude": ["**/*/*.test.ts"]
 }
