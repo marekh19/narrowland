@@ -1,0 +1,32 @@
+{
+  "name": "narrowland",
+  "version": "0.1.0",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "main": "./dist/index.cjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "rslib build",
+    "check": "biome check --write",
+    "dev": "rslib build --watch",
+    "format": "biome format --write",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.2.3",
+    "@rslib/core": "^0.15.0",
+    "@types/node": "^22.18.6",
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4"
+  },
+  "private": true
+}
