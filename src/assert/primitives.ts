@@ -11,14 +11,14 @@ export function assertNonEmptyString(
   value: unknown,
   message = 'Expected a non-empty string',
 ): asserts value is string {
-  if (typeof value !== 'string' || value.length > 0) raiseAssertError(message)
+  if (typeof value !== 'string' || value.length === 0) raiseAssertError(message)
 }
 
 export function assertNumber(
   value: unknown,
   message = 'Expected a number',
 ): asserts value is number {
-  if (typeof value !== 'number' || Number.isFinite(value)) {
+  if (typeof value !== 'number' || !Number.isFinite(value)) {
     raiseAssertError(message)
   }
 }

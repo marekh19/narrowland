@@ -11,13 +11,13 @@ export function raiseError(message: string, opts: RaiseOptions = {}): never {
 export function raiseAssertError(
   message: string,
   opts: Omit<RaiseOptions, 'name'> = {},
-) {
-  return () => raiseError(message, { name: 'AssertionError', ...opts })
+): never {
+  return raiseError(message, { name: 'AssertionError', ...opts })
 }
 
 export function raiseEnsureError(
   message: string,
   opts: Omit<RaiseOptions, 'name'> = {},
-) {
-  return () => raiseError(message, { name: 'EnsureError', ...opts })
+): never {
+  return raiseError(message, { name: 'EnsureError', ...opts })
 }

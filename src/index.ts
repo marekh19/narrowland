@@ -13,7 +13,7 @@ export {
   assertString,
   assertTruthy,
 } from './assert'
-export { invariant, type RaiseOptions, raiseError, ensure } from './errors'
+export { ensure, invariant, type RaiseOptions, raiseError } from './errors'
 export {
   is,
   isArray,

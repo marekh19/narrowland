@@ -19,7 +19,9 @@
     "check": "biome check --write",
     "dev": "rslib build --watch",
     "format": "biome format --write",
-    "test": "vitest run"
+    "test": "vitest run",
+    "test:ci": "tsc -p tsconfig.test.json && pnpm run test",
+    "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
     "@biomejs/biome": "2.2.5",
