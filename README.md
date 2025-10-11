@@ -66,7 +66,6 @@ invariant(isString(items), 'Items must be a string')
 
 ## 📚 API Reference
 
-> [!NOTE]  
 > All functions except `is.*` throw errors if the condition is not satisfied.
 
 ### Type Guards (`is.*`)
