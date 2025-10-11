@@ -1,6 +1,6 @@
 {
   "name": "narrowland",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "A lightweight TypeScript library providing type-safe assertions, type guards, and error handling utilities.",
   "author": "Marek Honzal <hi@marekhonzal.com>",
   "license": "MIT",
@@ -50,6 +50,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "2.2.5",
+    "@changesets/cli": "^2.29.7",
     "@commitlint/cli": "^20.1.0",
     "@commitlint/config-conventional": "^20.0.0",
     "@rslib/core": "^0.15.0",
