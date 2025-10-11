@@ -1,3 +1,3 @@
 export default {
-  './src/**/*.{ts}': ['biome check --write'],
+  './src/**/*.ts': ['biome check --write'],
 }
