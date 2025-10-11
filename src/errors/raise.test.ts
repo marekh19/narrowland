@@ -6,7 +6,7 @@ describe('raise', () => {
   describe('raiseError', () => {
     test('should throw error with default name', () => {
       expect(() => raiseError('Test error')).toThrow('Test error')
-      
+
       try {
         raiseError('Test error')
       } catch (error) {
@@ -18,12 +18,12 @@ describe('raise', () => {
 
     test('should throw error with custom options', () => {
       const cause = new Error('Original error')
-      
+
       try {
-        raiseError('Test error', { 
-          name: 'ValidationError', 
-          code: 'V001', 
-          cause 
+        raiseError('Test error', {
+          name: 'ValidationError',
+          code: 'V001',
+          cause,
         })
       } catch (error) {
         expect(error).toBeInstanceOf(Error)
@@ -40,15 +40,17 @@ describe('raise', () => {
         raiseError('This never returns')
         return 'unreachable'
       }
-      
+
       expect(() => fn()).toThrow('This never returns')
     })
   })
 
   describe('raiseAssertError', () => {
     test('should throw AssertionError directly', () => {
-      expect(() => raiseAssertError('Assertion failed')).toThrow('Assertion failed')
-      
+      expect(() => raiseAssertError('Assertion failed')).toThrow(
+        'Assertion failed',
+      )
+
       try {
         raiseAssertError('Assertion failed')
       } catch (error) {
@@ -60,11 +62,11 @@ describe('raise', () => {
 
     test('should work with custom options', () => {
       const cause = new Error('Original error')
-      
+
       try {
-        raiseAssertError('Assertion failed', { 
-          code: 'A001', 
-          cause 
+        raiseAssertError('Assertion failed', {
+          code: 'A001',
+          cause,
         })
       } catch (error) {
         expect(error).toBeInstanceOf(Error)
@@ -80,7 +82,7 @@ describe('raise', () => {
   describe('raiseEnsureError', () => {
     test('should throw EnsureError directly', () => {
       expect(() => raiseEnsureError('Ensure failed')).toThrow('Ensure failed')
-      
+
       try {
         raiseEnsureError('Ensure failed')
       } catch (error) {
@@ -92,11 +94,11 @@ describe('raise', () => {
 
     test('should work with custom options', () => {
       const cause = new Error('Original error')
-      
+
       try {
-        raiseEnsureError('Ensure failed', { 
-          code: 'E001', 
-          cause 
+        raiseEnsureError('Ensure failed', {
+          code: 'E001',
+          cause,
         })
       } catch (error) {
         expect(error).toBeInstanceOf(Error)

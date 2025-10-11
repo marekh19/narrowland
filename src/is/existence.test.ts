@@ -98,4 +98,3 @@ describe('existence', () => {
     // No type expectTypeOf check - TS can't properly define a Falsy type
   })
 })
-

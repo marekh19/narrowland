@@ -23,7 +23,9 @@ describe('assert/collections', () => {
     })
 
     test('should throw with custom message', () => {
-      expect(() => assertArray({}, 'Value must be an array')).toThrow('Value must be an array')
+      expect(() => assertArray({}, 'Value must be an array')).toThrow(
+        'Value must be an array',
+      )
     })
 
     test('should narrow type correctly', () => {
@@ -66,16 +68,30 @@ describe('assert/collections', () => {
     })
 
     test('should throw for empty arrays and non-arrays', () => {
-      expect(() => assertNonEmptyArray([])).toThrow('Expected a non-empty array')
-      expect(() => assertNonEmptyArray({})).toThrow('Expected a non-empty array')
-      expect(() => assertNonEmptyArray('hello')).toThrow('Expected a non-empty array')
-      expect(() => assertNonEmptyArray(42)).toThrow('Expected a non-empty array')
-      expect(() => assertNonEmptyArray(null)).toThrow('Expected a non-empty array')
+      expect(() => assertNonEmptyArray([])).toThrow(
+        'Expected a non-empty array',
+      )
+      expect(() => assertNonEmptyArray({})).toThrow(
+        'Expected a non-empty array',
+      )
+      expect(() => assertNonEmptyArray('hello')).toThrow(
+        'Expected a non-empty array',
+      )
+      expect(() => assertNonEmptyArray(42)).toThrow(
+        'Expected a non-empty array',
+      )
+      expect(() => assertNonEmptyArray(null)).toThrow(
+        'Expected a non-empty array',
+      )
     })
 
     test('should throw with custom message', () => {
-      expect(() => assertNonEmptyArray([], 'Array cannot be empty')).toThrow('Array cannot be empty')
-      expect(() => assertNonEmptyArray({}, 'Value must be a non-empty array')).toThrow('Value must be a non-empty array')
+      expect(() => assertNonEmptyArray([], 'Array cannot be empty')).toThrow(
+        'Array cannot be empty',
+      )
+      expect(() =>
+        assertNonEmptyArray({}, 'Value must be a non-empty array'),
+      ).toThrow('Value must be a non-empty array')
     })
 
     test('should narrow type correctly', () => {
@@ -130,8 +146,12 @@ describe('assert/collections', () => {
     })
 
     test('should throw with custom message', () => {
-      expect(() => assertObject([], 'Value must be an object')).toThrow('Value must be an object')
-      expect(() => assertObject(null, 'Value cannot be null')).toThrow('Value cannot be null')
+      expect(() => assertObject([], 'Value must be an object')).toThrow(
+        'Value must be an object',
+      )
+      expect(() => assertObject(null, 'Value cannot be null')).toThrow(
+        'Value cannot be null',
+      )
     })
 
     test('should narrow type correctly', () => {

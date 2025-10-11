@@ -328,4 +328,3 @@ describe('assert/fromPredicate', () => {
     })
   })
 })
-

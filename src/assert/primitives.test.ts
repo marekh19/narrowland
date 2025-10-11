@@ -1,7 +1,12 @@
 import { expectTypeOf } from 'expect-type'
 import { describe, expect, test } from 'vitest'
 
-import { assertBoolean, assertNonEmptyString, assertNumber, assertString } from './primitives'
+import {
+  assertBoolean,
+  assertNonEmptyString,
+  assertNumber,
+  assertString,
+} from './primitives'
 
 describe('assert/primitives', () => {
   describe('assertString', () => {
@@ -20,7 +25,9 @@ describe('assert/primitives', () => {
     })
 
     test('should throw with custom message', () => {
-      expect(() => assertString(123, 'Value must be a string')).toThrow('Value must be a string')
+      expect(() => assertString(123, 'Value must be a string')).toThrow(
+        'Value must be a string',
+      )
     })
 
     test('should narrow type correctly', () => {
@@ -51,15 +58,27 @@ describe('assert/primitives', () => {
     })
 
     test('should throw for empty strings and non-strings', () => {
-      expect(() => assertNonEmptyString('')).toThrow('Expected a non-empty string')
-      expect(() => assertNonEmptyString(123)).toThrow('Expected a non-empty string')
-      expect(() => assertNonEmptyString(null)).toThrow('Expected a non-empty string')
-      expect(() => assertNonEmptyString(undefined)).toThrow('Expected a non-empty string')
+      expect(() => assertNonEmptyString('')).toThrow(
+        'Expected a non-empty string',
+      )
+      expect(() => assertNonEmptyString(123)).toThrow(
+        'Expected a non-empty string',
+      )
+      expect(() => assertNonEmptyString(null)).toThrow(
+        'Expected a non-empty string',
+      )
+      expect(() => assertNonEmptyString(undefined)).toThrow(
+        'Expected a non-empty string',
+      )
     })
 
     test('should throw with custom message', () => {
-      expect(() => assertNonEmptyString('', 'Value cannot be empty')).toThrow('Value cannot be empty')
-      expect(() => assertNonEmptyString(123, 'Value must be a non-empty string')).toThrow('Value must be a non-empty string')
+      expect(() => assertNonEmptyString('', 'Value cannot be empty')).toThrow(
+        'Value cannot be empty',
+      )
+      expect(() =>
+        assertNonEmptyString(123, 'Value must be a non-empty string'),
+      ).toThrow('Value must be a non-empty string')
     })
 
     test('should narrow type correctly', () => {
@@ -101,8 +120,12 @@ describe('assert/primitives', () => {
     })
 
     test('should throw with custom message', () => {
-      expect(() => assertNumber('123', 'Value must be a number')).toThrow('Value must be a number')
-      expect(() => assertNumber(NaN, 'Value must be finite')).toThrow('Value must be finite')
+      expect(() => assertNumber('123', 'Value must be a number')).toThrow(
+        'Value must be a number',
+      )
+      expect(() => assertNumber(NaN, 'Value must be finite')).toThrow(
+        'Value must be finite',
+      )
     })
 
     test('should narrow type correctly', () => {
@@ -141,7 +164,9 @@ describe('assert/primitives', () => {
     })
 
     test('should throw with custom message', () => {
-      expect(() => assertBoolean(0, 'Value must be a boolean')).toThrow('Value must be a boolean')
+      expect(() => assertBoolean(0, 'Value must be a boolean')).toThrow(
+        'Value must be a boolean',
+      )
     })
 
     test('should narrow type correctly', () => {

@@ -17,13 +17,21 @@ describe('ensure', () => {
     })
 
     test('should throw for null and undefined', () => {
-      expect(() => ensure(null)).toThrow('Expected a defined (non-nullish) value')
-      expect(() => ensure(undefined)).toThrow('Expected a defined (non-nullish) value')
+      expect(() => ensure(null)).toThrow(
+        'Expected a defined (non-nullish) value',
+      )
+      expect(() => ensure(undefined)).toThrow(
+        'Expected a defined (non-nullish) value',
+      )
     })
 
     test('should throw with custom message', () => {
-      expect(() => ensure(null, 'Value is required')).toThrow('Value is required')
-      expect(() => ensure(undefined, 'Value is required')).toThrow('Value is required')
+      expect(() => ensure(null, 'Value is required')).toThrow(
+        'Value is required',
+      )
+      expect(() => ensure(undefined, 'Value is required')).toThrow(
+        'Value is required',
+      )
     })
 
     test('should narrow type correctly', () => {
@@ -57,8 +65,12 @@ describe('ensure', () => {
       }
 
       expect(processValue('hello')).toBe('HELLO')
-      expect(() => processValue(null)).toThrow('Value cannot be null or undefined')
-      expect(() => processValue(undefined)).toThrow('Value cannot be null or undefined')
+      expect(() => processValue(null)).toThrow(
+        'Value cannot be null or undefined',
+      )
+      expect(() => processValue(undefined)).toThrow(
+        'Value cannot be null or undefined',
+      )
     })
 
     test('should work with arrays', () => {
@@ -98,16 +110,19 @@ describe('ensure', () => {
     })
 
     test('should work with function return values', () => {
-      const getValue = (): string | null => Math.random() > 0.5 ? 'hello' : null
+      const getValue = (): string | null =>
+        Math.random() > 0.5 ? 'hello' : null
 
       const value = getValue()
-      
+
       if (value !== null) {
         const result = ensure(value)
         expectTypeOf(result).toEqualTypeOf<string>()
         expect(result).toBe('hello')
       } else {
-        expect(() => ensure(value)).toThrow('Expected a defined (non-nullish) value')
+        expect(() => ensure(value)).toThrow(
+          'Expected a defined (non-nullish) value',
+        )
       }
     })
 
@@ -122,14 +137,16 @@ describe('ensure', () => {
       }
 
       const response = mockApiCall()
-      
+
       if (response !== null) {
         const result = ensure(response)
         expectTypeOf(result).toEqualTypeOf<ApiResponse>()
         expect(result.data).toBe('success')
         expect(result.status).toBe(200)
       } else {
-        expect(() => ensure(response)).toThrow('Expected a defined (non-nullish) value')
+        expect(() => ensure(response)).toThrow(
+          'Expected a defined (non-nullish) value',
+        )
       }
     })
 
@@ -142,7 +159,7 @@ describe('ensure', () => {
       }
 
       const user: User | null | undefined = {
-        profile: { name: 'John', email: 'john@example.com' }
+        profile: { name: 'John', email: 'john@example.com' },
       }
 
       const ensuredUser = ensure(user)
@@ -150,7 +167,10 @@ describe('ensure', () => {
 
       if (profile) {
         const ensuredProfile = ensure(profile)
-        expectTypeOf(ensuredProfile).toEqualTypeOf<{ name: string; email: string }>()
+        expectTypeOf(ensuredProfile).toEqualTypeOf<{
+          name: string
+          email: string
+        }>()
         expect(ensuredProfile.name).toBe('John')
       }
     })
