@@ -1,0 +1,39 @@
+name: Lint + Format + TS check
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: ["**/**"]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v5
+        with:
+          node-version-file: ".nvmrc"
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm i --frozen-lockfile
+
+      - name: Lint check
+        run: pnpm lint:check
+
+      - name: Format check
+        run: pnpm format:check
+
+      - name: Knip
+        run: pnpm knip
+
+      - name: Typecheck
+        run: pnpm typecheck
