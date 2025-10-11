@@ -12,12 +12,4 @@ export default defineConfig({
       syntax: ['node 22'],
     },
   ],
-  performance: {
-    printFileSize: {
-      compressed: true,
-    },
-  },
-  output: {
-    minify: true,
-  },
 })
