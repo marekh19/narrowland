@@ -1,6 +1,23 @@
 {
   "name": "narrowland",
   "version": "0.1.0",
+  "description": "A lightweight TypeScript library providing type-safe assertions, type guards, and error handling utilities.",
+  "author": "Marek Honzal <hi@marekhonzal.com>",
+  "license": "MIT",
+  "keywords": [
+    "typescript",
+    "type-guards",
+    "assert",
+    "invariant",
+    "narrowing"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/marekh19/narrowland.git"
+  },
+  "bugs": {
+    "url": "https://github.com/marekh19/narrowland/issues"
+  },
   "type": "module",
   "exports": {
     ".": {
@@ -11,22 +28,25 @@
   },
   "main": "./dist/index.cjs",
   "types": "./dist/index.d.ts",
+  "sideEffects": false,
   "files": [
     "dist"
   ],
   "scripts": {
     "prepare": "husky",
     "build": "rslib build",
-    "check": "biome check --write",
+    "lint:fix": "biome check --write",
+    "lint:check": "biome check",
     "dev": "rslib build --watch",
-    "format": "biome format --write",
+    "format:fix": "biome format --write",
+    "format:check": "biome format",
     "test": "vitest run",
-    "test:ci": "tsc -p tsconfig.test.json && pnpm run test",
+    "test:ci": "tsc -p tsconfig.test.json && pnpm run test && pnpm run test:size",
+    "test:size": "size-limit",
     "test:coverage": "vitest run --coverage",
     "test:coverage:ci": "tsc -p tsconfig.test.json && pnpm run test:coverage",
     "typecheck": "tsc --noEmit",
-    "knip": "knip",
-    "size": "size-limit"
+    "knip": "knip"
   },
   "devDependencies": {
     "@biomejs/biome": "2.2.5",
