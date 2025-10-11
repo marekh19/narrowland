@@ -1,6 +1,6 @@
 # 🛡️ Narrowland
 
-[![codecov](https://codecov.io/gh/your-username/narrowland/branch/main/graph/badge.svg)](https://codecov.io/gh/your-username/narrowland)
+[![codecov](https://codecov.io/gh/marekh19/narrowland/branch/main/graph/badge.svg)](https://codecov.io/gh/marekh19/narrowland)
 [![npm version](https://img.shields.io/npm/v/narrowland.svg)](https://www.npmjs.com/package/narrowland)
 [![Bundle size](https://img.shields.io/bundlephobia/minzip/narrowland)](https://bundlephobia.com/package/narrowland)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
