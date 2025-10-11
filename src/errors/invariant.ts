@@ -1,5 +1,8 @@
 const PREFIX = 'Invariant failed'
 
+/**
+ * Throws if condition is falsy, does nothing if truthy
+ */
 export function invariant(
   condition: unknown,
   message?: string | (() => string),

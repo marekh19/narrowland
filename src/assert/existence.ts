@@ -1,5 +1,8 @@
 import { raiseAssertError } from '../errors/raise'
 
+/**
+ * Assertion that narrows a value to exclude null and undefined
+ */
 export function assertDefined<T>(
   value: T,
   message = 'Expected a defined value',
@@ -7,6 +10,9 @@ export function assertDefined<T>(
   if (value === null || value === undefined) raiseAssertError(message)
 }
 
+/**
+ * Assertion that narrows a value to exclude null
+ */
 export function assertNotNull<T>(
   value: T,
   message = 'Expected a non-null value',
@@ -14,6 +20,9 @@ export function assertNotNull<T>(
   if (value === null) raiseAssertError(message)
 }
 
+/**
+ * Assertion that narrows a value to exclude falsy values
+ */
 export function assertTruthy<T>(
   value: T,
   message = 'Expected a truthy value',
@@ -21,6 +30,9 @@ export function assertTruthy<T>(
   if (!value) raiseAssertError(message)
 }
 
+/**
+ * Assertion that narrows a value to only falsy values
+ */
 export function assertFalsy<T>(
   value: T,
   message = 'Expected a falsy value',

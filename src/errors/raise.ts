@@ -1,5 +1,8 @@
 export type RaiseOptions = { name?: string; code?: string; cause?: unknown }
 
+/**
+ * Throws error with custom name, code, and cause
+ */
 export function raiseError(message: string, opts: RaiseOptions = {}): never {
   const err = new Error(message, { cause: opts.cause })
   err.name = opts.name ?? 'InvariantError'
