@@ -15,7 +15,7 @@ A lightweight TypeScript library providing type guards, type assertions, and inv
 - **Type Assertions** (`assert.*`) - Throw errors for invalid types with full TypeScript inference
 - **Invariant Utilities** (`ensure`, `invariant`, `raiseError`) - Handle edge cases and invariants gracefully
 
-All functions are **tree-shakeable**, **zero-dependency**, and **fully typed** with TypeScript's type narrowing. You can import individual functions or use the grouped APIs - it's completely tree-shakeable.
+All functions are **tree-shakeable**, **zero-dependency**, and **fully typed** with TypeScript's type narrowing. You can import individual functions or use the grouped APIs.
 
 ## 📦 Installation
 
@@ -263,7 +263,7 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](https://github.com/marekh19/narrowland/blob/main/LICENSE) file for details.
 
 ## 🙏 Acknowledgments
 

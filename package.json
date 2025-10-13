@@ -46,7 +46,9 @@
     "test:coverage": "vitest run --coverage",
     "test:coverage:ci": "tsc -p tsconfig.test.json && pnpm run test:coverage",
     "typecheck": "tsc --noEmit",
-    "knip": "knip"
+    "knip": "knip",
+    "changeset": "changeset",
+    "release": "changeset version && pnpm build && git push && changeset publish && git push --follow-tags"
   },
   "devDependencies": {
     "@biomejs/biome": "2.2.5",
