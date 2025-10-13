@@ -1,5 +1,11 @@
 # narrowland
 
+## 1.0.1
+
+### Patch Changes
+
+- bafcaed: no code changes, just docs polish
+
 ## 1.0.0
 
 ### Major Changes
