@@ -1,5 +1,4 @@
-import { expectTypeOf } from 'expect-type'
-import { describe, expect, test } from 'vitest'
+import { describe, expect, expectTypeOf, test } from 'vitest'
 
 import { invariant } from './invariant'
 

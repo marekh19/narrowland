@@ -32,9 +32,6 @@ importers:
       '@vitest/coverage-v8':
         specifier: ^3.2.4
         version: 3.2.4(vitest@3.2.4(@types/node@24.7.2)(jiti@2.6.1)(yaml@2.8.1))
-      expect-type:
-        specifier: ^1.2.2
-        version: 1.2.2
       husky:
         specifier: ^9.1.7
         version: 9.1.7

@@ -1,5 +1,4 @@
-import { expectTypeOf } from 'expect-type'
-import { describe, expect, test } from 'vitest'
+import { describe, expect, expectTypeOf, test } from 'vitest'
 
 import { isDefined, isFalsy, isNotNull, isTruthy } from './existence'
 
@@ -25,6 +24,23 @@ describe('existence', () => {
         expectTypeOf(value).toEqualTypeOf<string>()
         expect(value.length).toBe(5)
       }
+    })
+
+    test('should work as a predicate to filter an array and narrow type correctly', () => {
+      const values: (string | number | { foo: string } | undefined | null)[] = [
+        1,
+        undefined,
+        'hello',
+        null,
+        { foo: 'bar' },
+      ]
+      const filtered = values.filter(isDefined)
+
+      expect(filtered).toEqual([1, 'hello', { foo: 'bar' }])
+      expect(filtered).toHaveLength(3)
+      expectTypeOf(filtered).toEqualTypeOf<
+        (string | number | { foo: string })[]
+      >()
     })
   })
 
