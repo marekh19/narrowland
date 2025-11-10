@@ -1,5 +1,11 @@
 # narrowland
 
+## 1.1.1
+
+### Patch Changes
+
+- extend `*.stringLiteral` to accept `unknown` instead of just `string` - ensures consistency with rest of the api
+
 ## 1.1.0
 
 ### Minor Changes

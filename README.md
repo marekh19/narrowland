@@ -219,7 +219,7 @@ const strings = mixedArray.filter(isString) // TypeScript knows these are string
 
 ## 📊 Bundle Size
 
-- **Size**: 686 B (minified + brotli)
+- **Size**: 684 B (minified + brotli)
 - **Dependencies**: 0
 - **Tree-shakeable**: ✅ (import individual functions)
 - **ESM + CJS**: ✅
