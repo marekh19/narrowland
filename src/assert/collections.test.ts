@@ -133,25 +133,25 @@ describe('assert/collections', () => {
   describe('assertStringLiteral', () => {
     test('should not throw when value is in allowed literals', () => {
       expect(() =>
-        assertStringLiteral('a' as 'a' | 'b', ['a', 'b'], 'Invalid literal'),
+        assertStringLiteral('a', ['a', 'b'], 'Invalid literal'),
       ).not.toThrow()
       expect(() =>
-        assertStringLiteral('b' as 'a' | 'b', ['a', 'b'], 'Invalid literal'),
+        assertStringLiteral('b', ['a', 'b'], 'Invalid literal'),
       ).not.toThrow()
     })
 
     test('should throw when value is not in allowed literals', () => {
       expect(() =>
-        assertStringLiteral('c' as 'a' | 'b', ['a', 'b'], 'Invalid literal'),
+        assertStringLiteral('c', ['a', 'b'], 'Invalid literal'),
       ).toThrow('Invalid literal')
       expect(() =>
-        assertStringLiteral('abc' as 'a' | 'b', ['a', 'b'], 'Invalid literal'),
+        assertStringLiteral('abc', ['a', 'b'], 'Invalid literal'),
       ).toThrow('Invalid literal')
     })
 
     test('should be case-sensitive', () => {
       expect(() =>
-        assertStringLiteral('Foo' as 'foo', ['foo'], 'Invalid literal'),
+        assertStringLiteral('Foo', ['foo'], 'Invalid literal'),
       ).toThrow('Invalid literal')
       expect(() =>
         assertStringLiteral('foo', ['foo'], 'Invalid literal'),
@@ -159,9 +159,16 @@ describe('assert/collections', () => {
     })
 
     test('should error with correct defualt error message', () => {
-      expect(() =>
-        assertStringLiteral('d' as 'a' | 'b' | 'c', ['a', 'b', 'c']),
-      ).toThrow(`Expected one of folowing values: a, b, c.`)
+      expect(() => assertStringLiteral('d', ['a', 'b', 'c'])).toThrow(
+        `Expected one of folowing values: a, b, c.`,
+      )
+    })
+
+    test('should narrow type to provided literal union', () => {
+      const value = 'a' as unknown
+      expectTypeOf(value).toEqualTypeOf<unknown>()
+      assertStringLiteral(value, ['a', 'b'], 'Invalid literal')
+      expectTypeOf(value).toEqualTypeOf<'a' | 'b'>()
     })
   })
 

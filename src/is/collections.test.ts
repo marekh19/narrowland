@@ -105,8 +105,19 @@ describe('collections', () => {
       expect(isStringLiteral('any', [])).toBe(false)
     })
 
+    test('should return false for any non-string value', () => {
+      const literals = ['a', 'b'] as const
+      expect(isStringLiteral(false, literals)).toBe(false)
+      expect(isStringLiteral([], literals)).toBe(false)
+      expect(isStringLiteral({}, literals)).toBe(false)
+      expect(isStringLiteral(1, literals)).toBe(false)
+      expect(isStringLiteral(true, literals)).toBe(false)
+      expect(isStringLiteral(null, literals)).toBe(false)
+      expect(isStringLiteral(undefined, literals)).toBe(false)
+    })
+
     test('should narrow type to provided literal union', () => {
-      const value = 'a' as 'a' | 'b' | 'c'
+      const value = 'a' as unknown
 
       if (isStringLiteral(value, ['a', 'b'])) {
         expectTypeOf(value).toEqualTypeOf<'a' | 'b'>()

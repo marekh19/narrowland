@@ -17,11 +17,11 @@ export function isNonEmptyArray<T = unknown>(
 /**
  * Type guard that narrows a value to string literal
  */
-export function isStringLiteral<T extends string, U extends T>(
-  value: T,
-  literals: U[],
-): value is U {
-  return (literals as T[]).includes(value)
+export function isStringLiteral<const T extends readonly string[]>(
+  value: unknown,
+  literals: T,
+): value is T[number] {
+  return typeof value === 'string' && literals.includes(value)
 }
 
 /**
