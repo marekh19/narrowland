@@ -23,15 +23,16 @@ export function assertNonEmptyArray<T = unknown>(
 /**
  * Assertion that narrows a value to string literal
  */
-export function assertStringLiteral<T extends string, U extends T>(
-  value: T,
-  literals: U[],
+export function assertStringLiteral<const T extends readonly string[]>(
+  value: unknown,
+  literals: T,
   message?: string,
-): asserts value is U {
-  if (!(literals as T[]).includes(value))
+): asserts value is T[number] {
+  if (typeof value !== 'string' || !literals.includes(value)) {
     raiseAssertError(
       message ?? `Expected one of folowing values: ${literals.join(', ')}.`,
     )
+  }
 }
 
 /**
