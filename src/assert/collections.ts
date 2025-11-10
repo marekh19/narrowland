@@ -21,6 +21,20 @@ export function assertNonEmptyArray<T = unknown>(
 }
 
 /**
+ * Assertion that narrows a value to string literal
+ */
+export function assertStringLiteral<T extends string, U extends T>(
+  value: T,
+  literals: U[],
+  message?: string,
+): asserts value is U {
+  if (!(literals as T[]).includes(value))
+    raiseAssertError(
+      message ?? `Expected one of folowing values: ${literals.join(', ')}.`,
+    )
+}
+
+/**
  * Assertion that narrows a value to plain object
  */
 export function assertObject<T extends object = object>(

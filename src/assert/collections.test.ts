@@ -1,6 +1,11 @@
 import { describe, expect, expectTypeOf, test } from 'vitest'
 
-import { assertArray, assertNonEmptyArray, assertObject } from './collections'
+import {
+  assertArray,
+  assertNonEmptyArray,
+  assertObject,
+  assertStringLiteral,
+} from './collections'
 
 describe('assert/collections', () => {
   describe('assertArray', () => {
@@ -122,6 +127,41 @@ describe('assert/collections', () => {
       expect(processValue([1, 2, 3])).toBe(3)
       expect(() => processValue([])).toThrow()
       expect(() => processValue({})).toThrow()
+    })
+  })
+
+  describe('assertStringLiteral', () => {
+    test('should not throw when value is in allowed literals', () => {
+      expect(() =>
+        assertStringLiteral('a' as 'a' | 'b', ['a', 'b'], 'Invalid literal'),
+      ).not.toThrow()
+      expect(() =>
+        assertStringLiteral('b' as 'a' | 'b', ['a', 'b'], 'Invalid literal'),
+      ).not.toThrow()
+    })
+
+    test('should throw when value is not in allowed literals', () => {
+      expect(() =>
+        assertStringLiteral('c' as 'a' | 'b', ['a', 'b'], 'Invalid literal'),
+      ).toThrow('Invalid literal')
+      expect(() =>
+        assertStringLiteral('abc' as 'a' | 'b', ['a', 'b'], 'Invalid literal'),
+      ).toThrow('Invalid literal')
+    })
+
+    test('should be case-sensitive', () => {
+      expect(() =>
+        assertStringLiteral('Foo' as 'foo', ['foo'], 'Invalid literal'),
+      ).toThrow('Invalid literal')
+      expect(() =>
+        assertStringLiteral('foo', ['foo'], 'Invalid literal'),
+      ).not.toThrow()
+    })
+
+    test('should error with correct defualt error message', () => {
+      expect(() =>
+        assertStringLiteral('d' as 'a' | 'b' | 'c', ['a', 'b', 'c']),
+      ).toThrow(`Expected one of folowing values: a, b, c.`)
     })
   })
 
