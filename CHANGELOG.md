@@ -1,5 +1,11 @@
 # narrowland
 
+## 1.1.0
+
+### Minor Changes
+
+- add `assertStringLiteral` and `isStringLiteral` functions
+
 ## 1.0.1
 
 ### Patch Changes
