@@ -1,4 +1,9 @@
-import { isArray, isNonEmptyArray, isObject } from './collections'
+import {
+  isArray,
+  isNonEmptyArray,
+  isObject,
+  isStringLiteral,
+} from './collections'
 import { isDefined, isFalsy, isNotNull, isTruthy } from './existence'
 import { isBoolean, isNonEmptyString, isNumber, isString } from './primitives'
 
@@ -13,6 +18,7 @@ export const is = {
   boolean: isBoolean,
   array: isArray,
   nonEmptyArray: isNonEmptyArray,
+  isStringLiteral: isStringLiteral,
   object: isObject,
 } as const
 
@@ -26,6 +32,7 @@ export {
   isTruthy,
   isBoolean,
   isNonEmptyString,
+  isStringLiteral,
   isNumber,
   isString,
 }

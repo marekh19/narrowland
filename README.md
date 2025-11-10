@@ -84,6 +84,7 @@ Type guards return `boolean` and narrow types without throwing errors. **Safer t
 | `is.boolean(value)` | `value is boolean` | Checks if value is a boolean |
 | `is.array(value)` | `value is T[]` | Checks if value is an array |
 | `is.nonEmptyArray(value)` | `value is [T, ...T[]]` | Checks if value is a non-empty array |
+| `is.stringLiteral(value, literals)` | `value is U[]` | Checks if value is a string literal |
 | `is.object(value)` | `value is T` | Checks if value is a plain object |
 
 ### Type Assertions (`assert.*`)
@@ -102,6 +103,7 @@ Assertions throw errors for invalid types and narrow types in the same scope. **
 | `assert.boolean(value, message?)` | `asserts value is boolean` | Throws if value is not a boolean |
 | `assert.array(value, message?)` | `asserts value is T[]` | Throws if value is not an array |
 | `assert.nonEmptyArray(value, message?)` | `asserts value is [T, ...T[]]` | Throws if value is not a non-empty array |
+| `assert.stringLiteral(value, literals, message?)` | `value is U[]` | Throws if value is a string literal |
 | `assert.object(value, message?)` | `asserts value is T` | Throws if value is not a plain object |
 | `assert.fromPredicate(predicate, message?)` | `(value, message?) => asserts value is T` | Creates custom assertion from predicate |
 

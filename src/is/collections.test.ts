@@ -1,6 +1,11 @@
 import { describe, expect, expectTypeOf, test } from 'vitest'
 
-import { isArray, isNonEmptyArray, isObject } from './collections'
+import {
+  isArray,
+  isNonEmptyArray,
+  isObject,
+  isStringLiteral,
+} from './collections'
 
 describe('collections', () => {
   describe('isArray', () => {
@@ -76,6 +81,37 @@ describe('collections', () => {
         expectTypeOf(value).toEqualTypeOf<[string, ...string[]]>()
         expect(value[0].toUpperCase()).toBe('HELLO')
         expect(value.length).toBeGreaterThan(0)
+      }
+    })
+  })
+
+  describe('isStringLiteral', () => {
+    test('should return true when value is in allowed literals', () => {
+      expect(isStringLiteral('a' as 'a' | 'b', ['a', 'b'])).toBe(true)
+      expect(isStringLiteral('b' as 'a' | 'b', ['a', 'b'])).toBe(true)
+    })
+
+    test('should return false when value is not in allowed literals', () => {
+      expect(isStringLiteral('c' as 'a' | 'b', ['a', 'b'])).toBe(false)
+      expect(isStringLiteral('ab' as 'a' | 'b', ['a', 'b'])).toBe(false)
+    })
+
+    test('should be case-sensitive', () => {
+      expect(isStringLiteral('Foo' as 'foo', ['foo'])).toBe(false)
+      expect(isStringLiteral('foo', ['foo'])).toBe(true)
+    })
+
+    test('should return false for empty allowed list', () => {
+      expect(isStringLiteral('any', [])).toBe(false)
+    })
+
+    test('should narrow type to provided literal union', () => {
+      const value = 'a' as 'a' | 'b' | 'c'
+
+      if (isStringLiteral(value, ['a', 'b'])) {
+        expectTypeOf(value).toEqualTypeOf<'a' | 'b'>()
+        expect(typeof value).toBe('string')
+        expect(value).toBe('a')
       }
     })
   })

@@ -15,6 +15,16 @@ export function isNonEmptyArray<T = unknown>(
 }
 
 /**
+ * Type guard that narrows a value to string literal
+ */
+export function isStringLiteral<T extends string, U extends T>(
+  value: T,
+  literals: U[],
+): value is U {
+  return (literals as T[]).includes(value)
+}
+
+/**
  * Type guard that narrows a value to plain object
  */
 export function isObject<T extends object = object>(

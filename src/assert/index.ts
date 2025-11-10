@@ -1,4 +1,9 @@
-import { assertArray, assertNonEmptyArray, assertObject } from './collections'
+import {
+  assertArray,
+  assertNonEmptyArray,
+  assertObject,
+  assertStringLiteral,
+} from './collections'
 import {
   assertDefined,
   assertFalsy,
@@ -23,6 +28,7 @@ export const assert = {
   notNull: assertNotNull,
   boolean: assertBoolean,
   nonEmptyString: assertNonEmptyString,
+  stringLiteral: assertStringLiteral,
   number: assertNumber,
   string: assertString,
   fromPredicate: assertFromPredicate,
@@ -38,6 +44,7 @@ export {
   assertTruthy,
   assertBoolean,
   assertNonEmptyString,
+  assertStringLiteral,
   assertNumber,
   assertString,
   assertFromPredicate,

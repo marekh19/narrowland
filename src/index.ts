@@ -11,6 +11,7 @@ export {
   assertNumber,
   assertObject,
   assertString,
+  assertStringLiteral,
   assertTruthy,
 } from './assert'
 export { ensure, invariant, type RaiseOptions, raiseError } from './errors'
@@ -26,5 +27,6 @@ export {
   isNumber,
   isObject,
   isString,
+  isStringLiteral,
   isTruthy,
 } from './is'
