@@ -2,6 +2,7 @@ import {
   assertArray,
   assertNonEmptyArray,
   assertObject,
+  assertOneOf,
   assertStringLiteral,
 } from './collections'
 import {
@@ -29,6 +30,7 @@ export const assert = {
   boolean: assertBoolean,
   nonEmptyString: assertNonEmptyString,
   stringLiteral: assertStringLiteral,
+  oneOf: assertOneOf,
   number: assertNumber,
   string: assertString,
   fromPredicate: assertFromPredicate,

@@ -84,7 +84,8 @@ Type guards return `boolean` and narrow types without throwing errors. **Safer t
 | `is.boolean(value)` | `value is boolean` | Checks if value is a boolean |
 | `is.array(value)` | `value is T[]` | Checks if value is an array |
 | `is.nonEmptyArray(value)` | `value is [T, ...T[]]` | Checks if value is a non-empty array |
-| `is.stringLiteral(value, literals)` | `value is T[number]` | Checks if value is a member of string literals array |
+| `is.stringLiteral(value, literals)` ⚠️ | `value is T[number]` | Checks if value is a member of string literals array (deprecated: use `is.oneOf` instead, will be removed in v2.0.0) |
+| `is.oneOf(value, collection)` | `value is T[number]` | Checks if value is a member of the provided collection (works with any type) |
 | `is.object(value)` | `value is T` | Checks if value is a plain object |
 
 ### Type Assertions (`assert.*`)
@@ -103,7 +104,8 @@ Assertions throw errors for invalid types and narrow types in the same scope. **
 | `assert.boolean(value, message?)` | `asserts value is boolean` | Throws if value is not a boolean |
 | `assert.array(value, message?)` | `asserts value is T[]` | Throws if value is not an array |
 | `assert.nonEmptyArray(value, message?)` | `asserts value is [T, ...T[]]` | Throws if value is not a non-empty array |
-| `assert.stringLiteral(value, literals, message?)` | `value is T[number]` | Throws if value is not a member of provided string literals array |
+| `assert.stringLiteral(value, literals, message?)` ⚠️ | `value is T[number]` | Throws if value is not a member of provided string literals array (deprecated: use `assert.oneOf` instead, will be removed in v2.0.0) |
+| `assert.oneOf(value, collection, message?)` | `asserts value is T[number]` | Throws if value is not a member of the provided collection (works with any type) |
 | `assert.object(value, message?)` | `asserts value is T` | Throws if value is not a plain object |
 | `assert.fromPredicate(predicate, message?)` | `(value, message?) => asserts value is T` | Creates custom assertion from predicate |
 
@@ -217,9 +219,37 @@ const mixedArray = ['hello', 42, 'world', true]
 const strings = mixedArray.filter(isString) // TypeScript knows these are strings
 ```
 
+### OneOf - Union Type Narrowing
+
+```typescript
+import { isOneOf, assertOneOf } from 'narrowland'
+
+// Works with any type, not just strings
+const status = 'pending' as unknown
+const validStatuses = ['pending', 'completed', 'failed'] as const
+
+// Type guard - returns boolean
+if (isOneOf(status, validStatuses)) {
+  // status is now typed as 'pending' | 'completed' | 'failed'
+  console.log(status.toUpperCase())
+}
+
+// Assertion - throws if invalid
+assertOneOf(status, validStatuses)
+// status is now typed as 'pending' | 'completed' | 'failed'
+
+// Works with mixed types too
+const value = 42 as unknown
+const allowedValues = [42, 'hello', true, null] as const
+
+if (isOneOf(value, allowedValues)) {
+  // value is now typed as 42 | 'hello' | true | null
+}
+```
+
 ## 📊 Bundle Size
 
-- **Size**: 684 B (minified + brotli)
+- **Size**: 731 B (minified + brotli)
 - **Dependencies**: 0
 - **Tree-shakeable**: ✅ (import individual functions)
 - **ESM + CJS**: ✅

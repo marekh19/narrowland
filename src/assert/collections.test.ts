@@ -4,6 +4,7 @@ import {
   assertArray,
   assertNonEmptyArray,
   assertObject,
+  assertOneOf,
   assertStringLiteral,
 } from './collections'
 
@@ -169,6 +170,256 @@ describe('assert/collections', () => {
       expectTypeOf(value).toEqualTypeOf<unknown>()
       assertStringLiteral(value, ['a', 'b'], 'Invalid literal')
       expectTypeOf(value).toEqualTypeOf<'a' | 'b'>()
+    })
+  })
+
+  describe('assertOneOf', () => {
+    test('should not throw when value is in collection (strings)', () => {
+      const collection = ['a', 'b', 'c'] as const
+      expect(() => assertOneOf('a', collection)).not.toThrow()
+      expect(() => assertOneOf('b', collection)).not.toThrow()
+      expect(() => assertOneOf('c', collection)).not.toThrow()
+    })
+
+    test('should not throw when value is in collection (numbers)', () => {
+      const collection = [1, 2, 3] as const
+      expect(() => assertOneOf(1, collection)).not.toThrow()
+      expect(() => assertOneOf(2, collection)).not.toThrow()
+      expect(() => assertOneOf(3, collection)).not.toThrow()
+    })
+
+    test('should not throw when value is in collection (mixed types)', () => {
+      const collection = ['a', 1, true, null] as const
+      expect(() => assertOneOf('a', collection)).not.toThrow()
+      expect(() => assertOneOf(1, collection)).not.toThrow()
+      expect(() => assertOneOf(true, collection)).not.toThrow()
+      expect(() => assertOneOf(null, collection)).not.toThrow()
+    })
+
+    test('should not throw when value is in collection (objects)', () => {
+      const obj1 = { a: 1 }
+      const obj2 = { b: 2 }
+      const collection = [obj1, obj2] as const
+      expect(() => assertOneOf(obj1, collection)).not.toThrow()
+      expect(() => assertOneOf(obj2, collection)).not.toThrow()
+    })
+
+    test('should not throw when value is in collection (arrays)', () => {
+      const arr1 = [1, 2]
+      const arr2 = [3, 4]
+      const collection = [arr1, arr2] as const
+      expect(() => assertOneOf(arr1, collection)).not.toThrow()
+      expect(() => assertOneOf(arr2, collection)).not.toThrow()
+    })
+
+    test('should throw when value is not in collection', () => {
+      const collection = ['a', 'b', 'c'] as const
+      expect(() => assertOneOf('d', collection)).toThrow(
+        'Expected one of folowing values: a, b, c.',
+      )
+      expect(() => assertOneOf('ab', collection)).toThrow(
+        'Expected one of folowing values: a, b, c.',
+      )
+      expect(() => assertOneOf('', collection)).toThrow(
+        'Expected one of folowing values: a, b, c.',
+      )
+    })
+
+    test('should throw for empty collection', () => {
+      const collection = [] as const
+      expect(() => assertOneOf('any', collection)).toThrow(
+        'Expected one of folowing values: .',
+      )
+      expect(() => assertOneOf(1, collection)).toThrow(
+        'Expected one of folowing values: .',
+      )
+      expect(() => assertOneOf(null, collection)).toThrow(
+        'Expected one of folowing values: .',
+      )
+    })
+
+    test('should be case-sensitive for strings', () => {
+      const collection = ['foo', 'bar'] as const
+      expect(() => assertOneOf('Foo', collection)).toThrow(
+        'Expected one of folowing values: foo, bar.',
+      )
+      expect(() => assertOneOf('FOO', collection)).toThrow(
+        'Expected one of folowing values: foo, bar.',
+      )
+      expect(() => assertOneOf('foo', collection)).not.toThrow()
+    })
+
+    test('should handle null and undefined correctly', () => {
+      const collectionWithNull = ['a', null, 'b'] as const
+      expect(() => assertOneOf(null, collectionWithNull)).not.toThrow()
+      expect(() => assertOneOf(undefined, collectionWithNull)).toThrow(
+        'Expected one of folowing values: a, , b.',
+      )
+
+      const collectionWithUndefined = ['a', undefined, 'b'] as const
+      expect(() =>
+        assertOneOf(undefined, collectionWithUndefined),
+      ).not.toThrow()
+      expect(() => assertOneOf(null, collectionWithUndefined)).toThrow(
+        'Expected one of folowing values: a, , b.',
+      )
+    })
+
+    test('should handle boolean values correctly', () => {
+      const collection = [true, false] as const
+      expect(() => assertOneOf(true, collection)).not.toThrow()
+      expect(() => assertOneOf(false, collection)).not.toThrow()
+      expect(() => assertOneOf(1, collection)).toThrow(
+        'Expected one of folowing values: true, false.',
+      )
+      expect(() => assertOneOf(0, collection)).toThrow(
+        'Expected one of folowing values: true, false.',
+      )
+    })
+
+    test('should handle number values correctly', () => {
+      const collection = [0, 1, -1, 42] as const
+      expect(() => assertOneOf(0, collection)).not.toThrow()
+      expect(() => assertOneOf(1, collection)).not.toThrow()
+      expect(() => assertOneOf(-1, collection)).not.toThrow()
+      expect(() => assertOneOf(42, collection)).not.toThrow()
+      expect(() => assertOneOf(2, collection)).toThrow(
+        'Expected one of folowing values: 0, 1, -1, 42.',
+      )
+      expect(() => assertOneOf(0.0, collection)).not.toThrow()
+    })
+
+    test('should throw for similar but different objects', () => {
+      const obj1 = { a: 1 }
+      const obj2 = { a: 1 }
+      const collection = [obj1] as const
+      expect(() => assertOneOf(obj1, collection)).not.toThrow()
+      expect(() => assertOneOf(obj2, collection)).toThrow(
+        'Expected one of folowing values: [object Object].',
+      )
+    })
+
+    test('should throw for similar but different arrays', () => {
+      const arr1 = [1, 2]
+      const arr2 = [1, 2]
+      const collection = [arr1] as const
+      expect(() => assertOneOf(arr1, collection)).not.toThrow()
+      expect(() => assertOneOf(arr2, collection)).toThrow(
+        'Expected one of folowing values: 1,2.',
+      )
+    })
+
+    test('should throw with custom message', () => {
+      const collection = ['a', 'b', 'c'] as const
+      expect(() =>
+        assertOneOf('d', collection, 'Value must be one of allowed values'),
+      ).toThrow('Value must be one of allowed values')
+      expect(() =>
+        assertOneOf(1, collection, 'Invalid value provided'),
+      ).toThrow('Invalid value provided')
+    })
+
+    test('should narrow type correctly for string literals', () => {
+      const value = 'a' as unknown
+      const collection = ['a', 'b', 'c'] as const
+
+      assertOneOf(value, collection)
+
+      expectTypeOf(value).toEqualTypeOf<'a' | 'b' | 'c'>()
+      expect(typeof value).toBe('string')
+      expect(value).toBe('a')
+    })
+
+    test('should narrow type correctly for number literals', () => {
+      const value = 1 as unknown
+      const collection = [1, 2, 3] as const
+
+      assertOneOf(value, collection)
+
+      expectTypeOf(value).toEqualTypeOf<1 | 2 | 3>()
+      expect(typeof value).toBe('number')
+      expect(value).toBe(1)
+    })
+
+    test('should narrow type correctly for mixed types', () => {
+      const value = 'a' as unknown
+      const collection = ['a', 1, true, null] as const
+
+      assertOneOf(value, collection)
+
+      expectTypeOf(value).toEqualTypeOf<'a' | 1 | true | null>()
+      expect(value).toBe('a')
+    })
+
+    test('should narrow type correctly for boolean literals', () => {
+      const value = true as unknown
+      const collection = [true, false] as const
+
+      assertOneOf(value, collection)
+
+      expectTypeOf(value).toEqualTypeOf<true | false>()
+      expect(typeof value).toBe('boolean')
+      expect(value).toBe(true)
+    })
+
+    test('should narrow type correctly with empty collection', () => {
+      const value = 'any' as unknown
+      const collection = [] as const
+
+      // This will throw, but TypeScript should narrow to never if it didn't
+      expect(() => assertOneOf(value, collection)).toThrow()
+    })
+
+    test('should narrow type correctly in conditional', () => {
+      const processValue = (value: unknown): string => {
+        assertOneOf(value, ['a', 'b', 'c'] as const)
+        return value.toUpperCase() // TypeScript knows this is 'a' | 'b' | 'c'
+      }
+
+      expect(processValue('a')).toBe('A')
+      expect(() => processValue('d')).toThrow()
+    })
+
+    test('should work with readonly arrays', () => {
+      const readonlyCollection: readonly string[] = ['a', 'b', 'c']
+      expect(() => assertOneOf('a', readonlyCollection)).not.toThrow()
+      expect(() => assertOneOf('d', readonlyCollection)).toThrow(
+        'Expected one of folowing values: a, b, c.',
+      )
+    })
+
+    test('should work with regular arrays', () => {
+      const regularCollection = ['a', 'b', 'c']
+      expect(() => assertOneOf('a', regularCollection)).not.toThrow()
+      expect(() => assertOneOf('d', regularCollection)).toThrow(
+        'Expected one of folowing values: a, b, c.',
+      )
+    })
+
+    test('should narrow type correctly after assertion for tuple', () => {
+      const value: unknown = 'hello'
+
+      // Before assertion, type is unknown
+      expectTypeOf(value).toEqualTypeOf<unknown>()
+
+      assertOneOf(value, ['hello', 'world'] as const)
+
+      // After assertion, type is narrowed
+      expectTypeOf(value).toEqualTypeOf<'hello' | 'world'>()
+      expect(value).toBe('hello')
+    })
+
+    test('should narrow type correctly after assertion for mutable array', () => {
+      const value: unknown = 'hello'
+      const collection = ['hello', 'world']
+
+      // Before assertion, type is unknown
+      expectTypeOf(value).toEqualTypeOf<unknown>()
+
+      assertOneOf(value, collection)
+
+      // After assertion, type is narrowed - no `as const` = no literals
+      expectTypeOf(value).toEqualTypeOf<string>()
     })
   })
 
