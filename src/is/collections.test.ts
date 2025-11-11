@@ -124,11 +124,11 @@ describe('collections', () => {
           | 'a'
           | 1
           | 2
+          | {
+              some: string
+            }
           | 'b'
           | readonly ['some']
-          | {
-              readonly some: 'thing'
-            }
         >()
         expect(value).toBe('a')
       }

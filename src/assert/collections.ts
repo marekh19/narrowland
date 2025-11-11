@@ -1,5 +1,4 @@
 import { raiseAssertError } from '../errors/raise'
-import { isObject } from '../is'
 
 /**
  * Assertion that narrows a value to array
@@ -31,8 +30,7 @@ export function assertLiteral<T, const U extends readonly T[]>(
 ): asserts value is U[number] {
   if (!literals.includes(value as U[number])) {
     raiseAssertError(
-      message ??
-        `Expected one of folowing values: ${literals.map((l) => (isObject(l) ? l.toString() : String(l))).join(', ')}.`,
+      message ?? `Expected one of folowing values: ${literals.join(', ')}.`,
     )
   }
 }
