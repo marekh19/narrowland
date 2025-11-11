@@ -50,4 +50,5 @@ export {
   assertNumber,
   assertString,
   assertFromPredicate,
+  assertOneOf,
 }
