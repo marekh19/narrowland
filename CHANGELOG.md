@@ -1,5 +1,17 @@
 # narrowland
 
+## 1.2.0
+
+### Minor Changes
+
+- Resolves #8
+
+  Add `is.oneOf` type guard and `assert.oneOf` assertion.
+
+  - Broader replacement for `.stringLiteral` utilities — works with arrays/tuples of any values (even mixed).
+  - Deprecate `is.stringLiteral` and `assert.stringLiteral` (to be removed in v2.0.0).
+  - Update README with new usage section
+
 ## 1.1.1
 
 ### Patch Changes
