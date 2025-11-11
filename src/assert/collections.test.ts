@@ -2,6 +2,7 @@ import { describe, expect, expectTypeOf, test } from 'vitest'
 
 import {
   assertArray,
+  assertLiteral,
   assertNonEmptyArray,
   assertObject,
   assertStringLiteral,
@@ -130,6 +131,51 @@ describe('assert/collections', () => {
     })
   })
 
+  describe('assertLiteral', () => {
+    const obj = { some: 'thing' }
+    type Value = 'a' | 'b' | 1 | 2 | { some: string } | readonly ['some']
+    const literals = ['a', 'b', 1, 2, obj, ['some']] as const
+
+    test('should not throw when value is in allowed literals', () => {
+      expect(assertLiteral('a' as Value, literals)).not.throw()
+      expect(assertLiteral('b' as Value, literals)).not.throw()
+      expect(assertLiteral(1 as Value, literals)).not.throw()
+      expect(assertLiteral(2 as Value, literals)).not.throw()
+      expect(assertLiteral(obj as Value, literals)).not.throw()
+    })
+
+    test('should throw when value is not in allowed literals', () => {
+      expect(
+        assertLiteral('c' as unknown, literals, 'Invalid literal'),
+      ).toThrow('Invalid literal')
+      expect(assertLiteral(3 as unknown, literals)).toThrow('Invalid literal')
+      expect(assertLiteral({ some: 'some' } as unknown, literals)).toThrow(
+        'Invalid literal',
+      )
+      expect(assertLiteral({ thing: 'some' } as unknown, literals)).toThrow(
+        'Invalid literal',
+      )
+      expect(assertLiteral({} as unknown, literals)).toThrow('Invalid literal')
+    })
+
+    test('should be case-sensitive', () => {
+      expect(assertLiteral('Foo' as 'foo', ['foo'])).toThrow('Invalid literal')
+      expect(assertLiteral('foo', ['foo'])).not.throw()
+    })
+
+    test('should error with correct defualt error message', () => {
+      expect(() => assertLiteral('d', ['a', 'b', 'c'])).toThrow(
+        `Expected one of folowing values: a, b, c.`,
+      )
+    })
+
+    test('should narrow type to provided literal union', () => {
+      const value = 'a' as unknown
+      expectTypeOf(value).toEqualTypeOf<unknown>()
+      assertLiteral(value, ['a', 'b'], 'Invalid literal')
+      expectTypeOf(value).toEqualTypeOf<'a' | 'b'>()
+    })
+  })
   describe('assertStringLiteral', () => {
     test('should not throw when value is in allowed literals', () => {
       expect(() =>

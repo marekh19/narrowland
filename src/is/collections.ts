@@ -15,13 +15,23 @@ export function isNonEmptyArray<T = unknown>(
 }
 
 /**
+ * Type guard that narrows a value to literal type
+ */
+export function isLiteral<T, const U extends readonly T[]>(
+  value: T,
+  literals: U,
+): value is U[number] {
+  return literals.includes(value as U[number])
+}
+
+/**
  * Type guard that narrows a value to string literal
  */
 export function isStringLiteral<const T extends readonly string[]>(
   value: unknown,
   literals: T,
 ): value is T[number] {
-  return typeof value === 'string' && literals.includes(value)
+  return typeof value === 'string' && isLiteral(value, literals)
 }
 
 /**

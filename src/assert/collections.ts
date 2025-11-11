@@ -1,4 +1,5 @@
 import { raiseAssertError } from '../errors/raise'
+import { isObject } from '../is'
 
 /**
  * Assertion that narrows a value to array
@@ -18,6 +19,22 @@ export function assertNonEmptyArray<T = unknown>(
   message = 'Expected a non-empty array',
 ): asserts value is [T, ...T[]] {
   if (!Array.isArray(value) || value.length === 0) raiseAssertError(message)
+}
+
+/**
+ * Assertion that narrows a value to literal
+ */
+export function assertLiteral<T, const U extends readonly T[]>(
+  value: T,
+  literals: U,
+  message?: string,
+): asserts value is U[number] {
+  if (!literals.includes(value as U[number])) {
+    raiseAssertError(
+      message ??
+        `Expected one of folowing values: ${literals.map((l) => (isObject(l) ? l.toString() : String(l))).join(', ')}.`,
+    )
+  }
 }
 
 /**

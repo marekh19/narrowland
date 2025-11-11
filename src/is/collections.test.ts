@@ -2,6 +2,7 @@ import { describe, expect, expectTypeOf, test } from 'vitest'
 
 import {
   isArray,
+  isLiteral,
   isNonEmptyArray,
   isObject,
   isStringLiteral,
@@ -81,6 +82,55 @@ describe('collections', () => {
         expectTypeOf(value).toEqualTypeOf<[string, ...string[]]>()
         expect(value[0].toUpperCase()).toBe('HELLO')
         expect(value.length).toBeGreaterThan(0)
+      }
+    })
+  })
+
+  describe('isLiteral', () => {
+    const obj = { some: 'thing' }
+    type Value = 'a' | 'b' | 1 | 2 | { some: string } | readonly ['some']
+    const literals = ['a', 'b', 1, 2, obj, ['some']] as const
+
+    test('should return true when value is in allowed literals', () => {
+      expect(isLiteral('a' as Value, literals)).toBe(true)
+      expect(isLiteral('b' as Value, literals)).toBe(true)
+      expect(isLiteral(1 as Value, literals)).toBe(true)
+      expect(isLiteral(2 as Value, literals)).toBe(true)
+      expect(isLiteral(obj as Value, literals)).toBe(true)
+    })
+
+    test('should return false when value is not in allowed literals', () => {
+      expect(isLiteral('c' as unknown, literals)).toBe(false)
+      expect(isLiteral(3 as unknown, literals)).toBe(false)
+      expect(isLiteral({ some: 'some' } as unknown, literals)).toBe(false)
+      expect(isLiteral({ thing: 'some' } as unknown, literals)).toBe(false)
+      expect(isLiteral({} as unknown, literals)).toBe(false)
+    })
+
+    test('should be case-sensitive', () => {
+      expect(isLiteral('Foo' as 'foo', ['foo'])).toBe(false)
+      expect(isLiteral('foo', ['foo'])).toBe(true)
+    })
+
+    test('should return false for empty allowed list', () => {
+      expect(isLiteral('any', [])).toBe(false)
+    })
+
+    test('should narrow type to provided literal union', () => {
+      const value = 'a' as unknown
+
+      if (isLiteral(value, literals)) {
+        expectTypeOf(value).toEqualTypeOf<
+          | 'a'
+          | 1
+          | 2
+          | 'b'
+          | readonly ['some']
+          | {
+              readonly some: 'thing'
+            }
+        >()
+        expect(value).toBe('a')
       }
     })
   })
