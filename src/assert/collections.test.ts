@@ -189,19 +189,21 @@ describe('assert/collections', () => {
     })
 
     test('should not throw when value is in collection (mixed types)', () => {
+      type Literal = 'a' | 1 | true | null
       const collection = ['a', 1, true, null] as const
-      expect(() => assertOneOf('a', collection)).not.toThrow()
-      expect(() => assertOneOf(1, collection)).not.toThrow()
-      expect(() => assertOneOf(true, collection)).not.toThrow()
-      expect(() => assertOneOf(null, collection)).not.toThrow()
+      expect(() => assertOneOf('a' as Literal, collection)).not.toThrow()
+      expect(() => assertOneOf(1 as Literal, collection)).not.toThrow()
+      expect(() => assertOneOf(true as Literal, collection)).not.toThrow()
+      expect(() => assertOneOf(null as Literal, collection)).not.toThrow()
     })
 
     test('should not throw when value is in collection (objects)', () => {
+      type Literal = { a: number } | { b: number }
       const obj1 = { a: 1 }
       const obj2 = { b: 2 }
       const collection = [obj1, obj2] as const
-      expect(() => assertOneOf(obj1, collection)).not.toThrow()
-      expect(() => assertOneOf(obj2, collection)).not.toThrow()
+      expect(() => assertOneOf(obj1 as Literal, collection)).not.toThrow()
+      expect(() => assertOneOf(obj2 as Literal, collection)).not.toThrow()
     })
 
     test('should not throw when value is in collection (arrays)', () => {
@@ -250,29 +252,39 @@ describe('assert/collections', () => {
     })
 
     test('should handle null and undefined correctly', () => {
+      type LiteralWithNull = 'a' | null | 'b'
       const collectionWithNull = ['a', null, 'b'] as const
-      expect(() => assertOneOf(null, collectionWithNull)).not.toThrow()
-      expect(() => assertOneOf(undefined, collectionWithNull)).toThrow(
-        'Expected one of folowing values: a, , b.',
-      )
+      expect(() =>
+        assertOneOf(null as LiteralWithNull, collectionWithNull),
+      ).not.toThrow()
+      expect(() =>
+        assertOneOf(
+          undefined as unknown as LiteralWithNull,
+          collectionWithNull,
+        ),
+      ).toThrow('Expected one of folowing values: a, , b.')
 
+      type LiteralWithUndefined = 'a' | undefined | 'b'
       const collectionWithUndefined = ['a', undefined, 'b'] as const
       expect(() =>
-        assertOneOf(undefined, collectionWithUndefined),
+        assertOneOf(undefined as LiteralWithUndefined, collectionWithUndefined),
       ).not.toThrow()
-      expect(() => assertOneOf(null, collectionWithUndefined)).toThrow(
-        'Expected one of folowing values: a, , b.',
-      )
+      expect(() =>
+        assertOneOf(
+          null as unknown as LiteralWithUndefined,
+          collectionWithUndefined,
+        ),
+      ).toThrow('Expected one of folowing values: a, , b.')
     })
 
     test('should handle boolean values correctly', () => {
       const collection = [true, false] as const
       expect(() => assertOneOf(true, collection)).not.toThrow()
       expect(() => assertOneOf(false, collection)).not.toThrow()
-      expect(() => assertOneOf(1, collection)).toThrow(
+      expect(() => assertOneOf(1 as unknown as boolean, collection)).toThrow(
         'Expected one of folowing values: true, false.',
       )
-      expect(() => assertOneOf(0, collection)).toThrow(
+      expect(() => assertOneOf(0 as unknown as boolean, collection)).toThrow(
         'Expected one of folowing values: true, false.',
       )
     })
@@ -310,12 +322,17 @@ describe('assert/collections', () => {
     })
 
     test('should throw with custom message', () => {
+      type Literal = 'a' | 'b' | 'c'
       const collection = ['a', 'b', 'c'] as const
       expect(() =>
         assertOneOf('d', collection, 'Value must be one of allowed values'),
       ).toThrow('Value must be one of allowed values')
       expect(() =>
-        assertOneOf(1, collection, 'Invalid value provided'),
+        assertOneOf(
+          1 as unknown as Literal,
+          collection,
+          'Invalid value provided',
+        ),
       ).toThrow('Invalid value provided')
     })
 
