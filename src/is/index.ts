@@ -2,6 +2,7 @@ import {
   isArray,
   isNonEmptyArray,
   isObject,
+  isOneOf,
   isStringLiteral,
 } from './collections'
 import { isDefined, isFalsy, isNotNull, isTruthy } from './existence'
@@ -18,7 +19,10 @@ export const is = {
   boolean: isBoolean,
   array: isArray,
   nonEmptyArray: isNonEmptyArray,
+  stringLiteral: isStringLiteral,
+  // FIXME: remove below with v2.0.0 - wrong name, keep for now for backwards compatibility
   isStringLiteral: isStringLiteral,
+  oneOf: isOneOf,
   object: isObject,
 } as const
 
@@ -35,4 +39,5 @@ export {
   isStringLiteral,
   isNumber,
   isString,
+  isOneOf,
 }

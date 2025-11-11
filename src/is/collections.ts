@@ -15,13 +15,24 @@ export function isNonEmptyArray<T = unknown>(
 }
 
 /**
- * Type guard that narrows a value to string literal
+ * @deprecated Use {@link isOneOf} instead.
+ * This function will be removed in the next major release (v2.0.0).
  */
 export function isStringLiteral<const T extends readonly string[]>(
   value: unknown,
   literals: T,
 ): value is T[number] {
   return typeof value === 'string' && literals.includes(value)
+}
+
+/**
+ * Type guard that narrows the given value to the union of values from the provided collection.
+ */
+export function isOneOf<const T extends readonly unknown[]>(
+  value: unknown,
+  collection: T,
+): value is T[number] {
+  return collection.includes(value)
 }
 
 /**

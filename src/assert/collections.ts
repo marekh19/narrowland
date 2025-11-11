@@ -21,7 +21,8 @@ export function assertNonEmptyArray<T = unknown>(
 }
 
 /**
- * Assertion that narrows a value to string literal
+ * @deprecated Use {@link assertOneOf} instead.
+ * This function will be removed in the next major release (v2.0.0).
  */
 export function assertStringLiteral<const T extends readonly string[]>(
   value: unknown,
@@ -31,6 +32,21 @@ export function assertStringLiteral<const T extends readonly string[]>(
   if (typeof value !== 'string' || !literals.includes(value)) {
     raiseAssertError(
       message ?? `Expected one of folowing values: ${literals.join(', ')}.`,
+    )
+  }
+}
+
+/**
+ * Assertion that narrows the given value to the union of values from the provided collection.
+ */
+export function assertOneOf<const T extends readonly unknown[]>(
+  value: unknown,
+  collection: T,
+  message?: string,
+): asserts value is T[number] {
+  if (!collection.includes(value)) {
+    raiseAssertError(
+      message ?? `Expected one of folowing values: ${collection.join(', ')}.`,
     )
   }
 }
