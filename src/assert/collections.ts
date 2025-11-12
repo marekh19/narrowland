@@ -39,11 +39,11 @@ export function assertStringLiteral<const T extends readonly string[]>(
 /**
  * Assertion that narrows the given value to the union of values from the provided collection.
  */
-export function assertOneOf<const T extends readonly unknown[]>(
-  value: unknown,
-  collection: T,
+export function assertOneOf<T, const U extends readonly T[]>(
+  value: T,
+  collection: U,
   message?: string,
-): asserts value is T[number] {
+): asserts value is U[number] {
   if (!collection.includes(value)) {
     raiseAssertError(
       message ?? `Expected one of folowing values: ${collection.join(', ')}.`,

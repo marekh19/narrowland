@@ -131,7 +131,7 @@ describe('collections', () => {
   describe('isOneOf', () => {
     test('should return true when value is in collection (strings)', () => {
       const collection = ['a', 'b', 'c'] as const
-      expect(isOneOf('a', collection)).toBe(true)
+      expect(isOneOf('a', ['a', 'd'])).toBe(true)
       expect(isOneOf('b', collection)).toBe(true)
       expect(isOneOf('c', collection)).toBe(true)
     })
@@ -144,19 +144,22 @@ describe('collections', () => {
     })
 
     test('should return true when value is in collection (mixed types)', () => {
+      type Literal = 'a' | 1 | true | null
       const collection = ['a', 1, true, null] as const
-      expect(isOneOf('a', collection)).toBe(true)
-      expect(isOneOf(1, collection)).toBe(true)
-      expect(isOneOf(true, collection)).toBe(true)
-      expect(isOneOf(null, collection)).toBe(true)
+
+      expect(isOneOf('a' as Literal, collection)).toBe(true)
+      expect(isOneOf(1 as Literal, collection)).toBe(true)
+      expect(isOneOf(true as Literal, collection)).toBe(true)
+      expect(isOneOf(null as Literal, collection)).toBe(true)
     })
 
     test('should return true when value is in collection (objects)', () => {
+      type Literal = { a: number } | { b: number }
       const obj1 = { a: 1 }
       const obj2 = { b: 2 }
       const collection = [obj1, obj2] as const
-      expect(isOneOf(obj1, collection)).toBe(true)
-      expect(isOneOf(obj2, collection)).toBe(true)
+      expect(isOneOf(obj1 as Literal, collection)).toBe(true)
+      expect(isOneOf(obj2 as Literal, collection)).toBe(true)
     })
 
     test('should return true when value is in collection (arrays)', () => {
@@ -189,21 +192,32 @@ describe('collections', () => {
     })
 
     test('should handle null and undefined correctly', () => {
+      type LiteralWithNull = 'a' | null | 'b'
       const collectionWithNull = ['a', null, 'b'] as const
-      expect(isOneOf(null, collectionWithNull)).toBe(true)
-      expect(isOneOf(undefined, collectionWithNull)).toBe(false)
+      expect(isOneOf(null as LiteralWithNull, collectionWithNull)).toBe(true)
+      expect(
+        isOneOf(undefined as unknown as LiteralWithNull, collectionWithNull),
+      ).toBe(false)
 
+      type LiteralWithUndefined = 'a' | undefined | 'b'
       const collectionWithUndefined = ['a', undefined, 'b'] as const
-      expect(isOneOf(undefined, collectionWithUndefined)).toBe(true)
-      expect(isOneOf(null, collectionWithUndefined)).toBe(false)
+      expect(
+        isOneOf(undefined as LiteralWithUndefined, collectionWithUndefined),
+      ).toBe(true)
+      expect(
+        isOneOf(
+          null as unknown as LiteralWithUndefined,
+          collectionWithUndefined,
+        ),
+      ).toBe(false)
     })
 
     test('should handle boolean values correctly', () => {
       const collection = [true, false] as const
       expect(isOneOf(true, collection)).toBe(true)
       expect(isOneOf(false, collection)).toBe(true)
-      expect(isOneOf(1, collection)).toBe(false)
-      expect(isOneOf(0, collection)).toBe(false)
+      expect(isOneOf(1 as unknown as boolean, collection)).toBe(false)
+      expect(isOneOf(0 as unknown as boolean, collection)).toBe(false)
     })
 
     test('should handle number values correctly', () => {

@@ -28,11 +28,11 @@ export function isStringLiteral<const T extends readonly string[]>(
 /**
  * Type guard that narrows the given value to the union of values from the provided collection.
  */
-export function isOneOf<const T extends readonly unknown[]>(
-  value: unknown,
-  collection: T,
-): value is T[number] {
-  return collection.includes(value)
+export function isOneOf<T, const U extends readonly T[]>(
+  value: T,
+  collection: U,
+): value is U[number] {
+  return collection.includes(value as U[number])
 }
 
 /**
