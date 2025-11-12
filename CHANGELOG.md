@@ -1,5 +1,11 @@
 # narrowland
 
+## 1.2.1
+
+### Patch Changes
+
+- fix: `*.oneOf` - add type binding between first and second argument for improved type inference
+
 ## 1.2.0
 
 ### Minor Changes

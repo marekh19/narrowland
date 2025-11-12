@@ -1,6 +1,6 @@
 {
   "name": "narrowland",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "A lightweight TypeScript library providing type-safe assertions, type guards, and error handling utilities.",
   "author": "Marek Honzal <hi@marekhonzal.com>",
   "license": "MIT",
