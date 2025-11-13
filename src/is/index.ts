@@ -1,5 +1,6 @@
 import {
   isArray,
+  isArrayOf,
   isNonEmptyArray,
   isObject,
   isOneOf,
@@ -19,6 +20,7 @@ export const is = {
   boolean: isBoolean,
   array: isArray,
   nonEmptyArray: isNonEmptyArray,
+  arrayOf: isArrayOf,
   stringLiteral: isStringLiteral,
   // FIXME: remove below with v2.0.0 - wrong name, keep for now for backwards compatibility
   isStringLiteral: isStringLiteral,
@@ -29,6 +31,7 @@ export const is = {
 export {
   isArray,
   isNonEmptyArray,
+  isArrayOf,
   isObject,
   isDefined,
   isFalsy,

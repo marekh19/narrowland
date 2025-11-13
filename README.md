@@ -84,6 +84,7 @@ Type guards return `boolean` and narrow types without throwing errors. **Safer t
 | `is.boolean(value)` | `value is boolean` | Checks if value is a boolean |
 | `is.array(value)` | `value is T[]` | Checks if value is an array |
 | `is.nonEmptyArray(value)` | `value is [T, ...T[]]` | Checks if value is a non-empty array |
+| `is.arrayOf(value, guard)` | `value is T[]` | Checks if value is an array whose items satisfy the provided guard |
 | `is.stringLiteral(value, literals)` ⚠️ | `value is T[number]` | Checks if value is a member of string literals array (deprecated: use `is.oneOf` instead, will be removed in v2.0.0) |
 | `is.oneOf(value, collection)` | `value is T[number]` | Checks if value is a member of the provided collection (works with any type) |
 | `is.object(value)` | `value is T` | Checks if value is a plain object |
@@ -104,6 +105,7 @@ Assertions throw errors for invalid types and narrow types in the same scope. **
 | `assert.boolean(value, message?)` | `asserts value is boolean` | Throws if value is not a boolean |
 | `assert.array(value, message?)` | `asserts value is T[]` | Throws if value is not an array |
 | `assert.nonEmptyArray(value, message?)` | `asserts value is [T, ...T[]]` | Throws if value is not a non-empty array |
+| `assert.arrayOf(value, guard, message?)` | `asserts value is T[]` | Throws if value is not an array whose items satisfy the provided guard |
 | `assert.stringLiteral(value, literals, message?)` ⚠️ | `value is T[number]` | Throws if value is not a member of provided string literals array (deprecated: use `assert.oneOf` instead, will be removed in v2.0.0) |
 | `assert.oneOf(value, collection, message?)` | `asserts value is T[number]` | Throws if value is not a member of the provided collection (works with any type) |
 | `assert.object(value, message?)` | `asserts value is T` | Throws if value is not a plain object |

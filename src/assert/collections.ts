@@ -21,6 +21,19 @@ export function assertNonEmptyArray<T = unknown>(
 }
 
 /**
+ * Assertion that narrows a value to an array whose elements satisfy the provided guard.
+ */
+export function assertArrayOf<T>(
+  value: unknown,
+  guardFn: (item: unknown) => item is T,
+  message = 'Expected an array of valid items',
+): asserts value is T[] {
+  if (!Array.isArray(value) || !value.every((item) => guardFn(item))) {
+    raiseAssertError(message)
+  }
+}
+
+/**
  * @deprecated Use {@link assertOneOf} instead.
  * This function will be removed in the next major release (v2.0.0).
  */

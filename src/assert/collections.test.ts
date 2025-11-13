@@ -1,7 +1,15 @@
 import { describe, expect, expectTypeOf, test } from 'vitest'
-
+import { isArray, isNonEmptyArray, isObject, isOneOf } from '../is/collections'
+import { isDefined, isFalsy, isNotNull, isTruthy } from '../is/existence'
+import {
+  isBoolean,
+  isNonEmptyString,
+  isNumber,
+  isString,
+} from '../is/primitives'
 import {
   assertArray,
+  assertArrayOf,
   assertNonEmptyArray,
   assertObject,
   assertOneOf,
@@ -60,6 +68,157 @@ describe('assert/collections', () => {
 
       expect(processValue([1, 2, 3])).toBe(3)
       expect(() => processValue({})).toThrow()
+    })
+  })
+
+  describe('assertArrayOf', () => {
+    test('should throw for non-arrays', () => {
+      expect(() => assertArrayOf('hello', isString)).toThrow(
+        'Expected an array of valid items',
+      )
+      expect(() => assertArrayOf(42, isNumber)).toThrow(
+        'Expected an array of valid items',
+      )
+      expect(() => assertArrayOf(true, isBoolean)).toThrow(
+        'Expected an array of valid items',
+      )
+      expect(() => assertArrayOf(null, isDefined)).toThrow(
+        'Expected an array of valid items',
+      )
+      expect(() => assertArrayOf(undefined, isNotNull)).toThrow(
+        'Expected an array of valid items',
+      )
+      expect(() => assertArrayOf({ a: 1 }, isObject)).toThrow(
+        'Expected an array of valid items',
+      )
+    })
+
+    test('should validate strings', () => {
+      expect(() => assertArrayOf(['a', 'b', 'c'], isString)).not.toThrow()
+      expect(() => assertArrayOf(['a', 1 as unknown], isString)).toThrow()
+    })
+
+    test('should validate non-empty strings', () => {
+      expect(() => assertArrayOf(['a', 'b'], isNonEmptyString)).not.toThrow()
+      expect(() => assertArrayOf(['a', ''], isNonEmptyString)).toThrow()
+      expect(() => assertArrayOf(['', ''], isNonEmptyString)).toThrow()
+    })
+
+    test('should validate numbers (finite only)', () => {
+      expect(() => assertArrayOf([0, 1, 2.5], isNumber)).not.toThrow()
+      expect(() =>
+        assertArrayOf([1, Number.POSITIVE_INFINITY], isNumber),
+      ).toThrow()
+      expect(() => assertArrayOf([1, NaN], isNumber)).toThrow()
+    })
+
+    test('should validate booleans', () => {
+      expect(() => assertArrayOf([true, false, true], isBoolean)).not.toThrow()
+      expect(() => assertArrayOf([true, 1 as unknown], isBoolean)).toThrow()
+    })
+
+    test('should validate defined (exclude null and undefined)', () => {
+      expect(() => assertArrayOf([0, '', false], isDefined)).not.toThrow()
+      expect(() => assertArrayOf([null], isDefined)).toThrow()
+      expect(() => assertArrayOf([undefined], isDefined)).toThrow()
+      expect(() =>
+        assertArrayOf([1, undefined] as unknown[], isDefined),
+      ).toThrow()
+    })
+
+    test('should validate notNull (exclude only null)', () => {
+      expect(() =>
+        assertArrayOf([undefined, 1] as unknown[], isNotNull),
+      ).not.toThrow()
+      expect(() => assertArrayOf([null], isNotNull)).toThrow()
+      expect(() =>
+        assertArrayOf([null, undefined] as unknown[], isNotNull),
+      ).toThrow()
+    })
+
+    test('should validate truthy', () => {
+      expect(() => assertArrayOf([1, 'a', true], isTruthy)).not.toThrow()
+      expect(() => assertArrayOf([1, 0] as unknown[], isTruthy)).toThrow()
+      expect(() => assertArrayOf(['', 'a'] as unknown[], isTruthy)).toThrow()
+    })
+
+    test('should validate falsy', () => {
+      expect(() =>
+        assertArrayOf([0, '', false, null, undefined], isFalsy),
+      ).not.toThrow()
+      expect(() => assertArrayOf([0, 1] as unknown[], isFalsy)).toThrow()
+      expect(() => assertArrayOf(['', 'a'] as unknown[], isFalsy)).toThrow()
+    })
+
+    test('should validate arrays of arrays', () => {
+      expect(() => assertArrayOf([[1], [2, 3]], isArray)).not.toThrow()
+      expect(() => assertArrayOf([[1], []], isNonEmptyArray)).toThrow()
+      expect(() => assertArrayOf([[1], ['a']], isArray)).not.toThrow()
+      expect(() => assertArrayOf([1, [2]] as unknown[], isArray)).toThrow()
+    })
+
+    test('should validate arrays of non-empty arrays', () => {
+      expect(() => assertArrayOf([[1], ['a']], isNonEmptyArray)).not.toThrow()
+      expect(() => assertArrayOf([[]] as unknown[], isNonEmptyArray)).toThrow()
+    })
+
+    test('should validate objects (non-null, not arrays)', () => {
+      expect(() => assertArrayOf([{}, { a: 1 }], isObject)).not.toThrow()
+      expect(() => assertArrayOf([null] as unknown[], isObject)).toThrow()
+      expect(() => assertArrayOf([[1]] as unknown[], isObject)).toThrow()
+    })
+
+    test('should work with oneOf guard via wrapper', () => {
+      const isOneOf123 = (v: unknown): v is 1 | 2 | 3 =>
+        isOneOf(v, [1, 2, 3] as const)
+      expect(() => assertArrayOf([1, 2, 3], isOneOf123)).not.toThrow()
+      expect(() => assertArrayOf([1, 4] as unknown[], isOneOf123)).toThrow()
+    })
+
+    test('should narrow type for string arrays', () => {
+      const value: unknown = ['x', 'y']
+
+      assertArrayOf(value, isString)
+
+      expectTypeOf(value).toEqualTypeOf<string[]>()
+      expect(value[0].toUpperCase()).toBe('X')
+    })
+
+    test('should narrow type for number arrays', () => {
+      const value: unknown = [1, 2, 3]
+
+      assertArrayOf(value, isNumber)
+
+      expectTypeOf(value).toEqualTypeOf<number[]>()
+      expect(value.reduce((a, b) => a + b, 0)).toBe(6)
+    })
+
+    test('should narrow type using custom guard', () => {
+      type User = { id: number; name: string }
+      const isUser = (v: unknown): v is User =>
+        isObject(v) &&
+        typeof (v as { id: unknown }).id === 'number' &&
+        typeof (v as { name: unknown }).name === 'string'
+
+      const value: unknown = [
+        { id: 1, name: 'John' },
+        { id: 2, name: 'Jane' },
+      ]
+
+      assertArrayOf(value, isUser)
+
+      expectTypeOf(value).toEqualTypeOf<User[]>()
+      expect(value[0].name).toBe('John')
+    })
+
+    test('should support custom error message', () => {
+      expect(() =>
+        assertArrayOf(
+          [1, 'a'] as unknown[],
+          isNumber,
+          'All items must be numbers',
+        ),
+      ).toThrow('All items must be numbers')
     })
   })
 
