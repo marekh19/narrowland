@@ -41,3 +41,13 @@ export function assertBoolean(
 ): asserts value is boolean {
   if (typeof value !== 'boolean') raiseAssertError(message)
 }
+
+/**
+ * Assertion that narrows a value to Date
+ */
+export function assertDate(
+  value: unknown,
+  message = 'Expected a Date',
+): asserts value is Date {
+  if (!(value instanceof Date)) raiseAssertError(message)
+}

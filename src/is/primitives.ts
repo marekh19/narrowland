@@ -25,3 +25,10 @@ export function isNumber(value: unknown): value is number {
 export function isBoolean(value: unknown): value is boolean {
   return typeof value === 'boolean'
 }
+
+/**
+ * Type guard that narrows a value to Date
+ */
+export function isDate(value: unknown): value is Date {
+  return value instanceof Date
+}

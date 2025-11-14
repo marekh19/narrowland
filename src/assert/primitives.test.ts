@@ -2,6 +2,7 @@ import { describe, expect, expectTypeOf, test } from 'vitest'
 
 import {
   assertBoolean,
+  assertDate,
   assertNonEmptyString,
   assertNumber,
   assertString,
@@ -186,6 +187,40 @@ describe('assert/primitives', () => {
       expect(processValue(true)).toBe('true')
       expect(processValue(false)).toBe('false')
       expect(() => processValue('hello')).toThrow()
+    })
+  })
+
+  describe('assertDate', () => {
+    test('should not throw for Date objects', () => {
+      expect(() => assertDate(new Date())).not.toThrow()
+      expect(() => assertDate(new Date('2023-01-01'))).not.toThrow()
+      expect(() => assertDate(new Date(0))).not.toThrow()
+      // Invalid Date is still a Date object
+      expect(() => assertDate(new Date('invalid'))).not.toThrow()
+    })
+
+    test('should throw for non-Date values', () => {
+      expect(() => assertDate('2023-01-01')).toThrow('Expected a Date')
+      expect(() => assertDate(1234567890)).toThrow('Expected a Date')
+      expect(() => assertDate({})).toThrow('Expected a Date')
+      expect(() => assertDate(null)).toThrow('Expected a Date')
+      expect(() => assertDate(undefined)).toThrow('Expected a Date')
+      expect(() => assertDate('')).toThrow('Expected a Date')
+    })
+
+    test('should throw with custom message', () => {
+      expect(() => assertDate('2023-01-01', 'Value must be a Date')).toThrow(
+        'Value must be a Date',
+      )
+    })
+
+    test('should narrow type correctly', () => {
+      const value: unknown = new Date()
+
+      assertDate(value)
+
+      expectTypeOf(value).toEqualTypeOf<Date>()
+      expect(value.getTime()).toBeTypeOf('number')
     })
   })
 })

@@ -7,7 +7,13 @@ import {
   isStringLiteral,
 } from './collections'
 import { isDefined, isFalsy, isNotNull, isTruthy } from './existence'
-import { isBoolean, isNonEmptyString, isNumber, isString } from './primitives'
+import {
+  isBoolean,
+  isDate,
+  isNonEmptyString,
+  isNumber,
+  isString,
+} from './primitives'
 
 export const is = {
   defined: isDefined,
@@ -18,6 +24,7 @@ export const is = {
   nonEmptyString: isNonEmptyString,
   number: isNumber,
   boolean: isBoolean,
+  date: isDate,
   array: isArray,
   nonEmptyArray: isNonEmptyArray,
   arrayOf: isArrayOf,
@@ -38,6 +45,7 @@ export {
   isNotNull,
   isTruthy,
   isBoolean,
+  isDate,
   isNonEmptyString,
   isStringLiteral,
   isNumber,

@@ -1,6 +1,12 @@
 import { describe, expect, expectTypeOf, test } from 'vitest'
 
-import { isBoolean, isNonEmptyString, isNumber, isString } from './primitives'
+import {
+  isBoolean,
+  isDate,
+  isNonEmptyString,
+  isNumber,
+  isString,
+} from './primitives'
 
 describe('primitives', () => {
   describe('isString', () => {
@@ -96,6 +102,34 @@ describe('primitives', () => {
       if (isBoolean(value)) {
         expectTypeOf(value).toEqualTypeOf<boolean>()
         expect(value).toBe(true)
+      }
+    })
+  })
+
+  describe('isDate', () => {
+    test('should return true for Date objects', () => {
+      expect(isDate(new Date())).toBe(true)
+      expect(isDate(new Date('2023-01-01'))).toBe(true)
+      expect(isDate(new Date(0))).toBe(true)
+      // Invalid Date is still a Date object
+      expect(isDate(new Date('invalid'))).toBe(true)
+    })
+
+    test('should return false for non-Date values', () => {
+      expect(isDate('2023-01-01')).toBe(false)
+      expect(isDate(1234567890)).toBe(false)
+      expect(isDate({})).toBe(false)
+      expect(isDate(null)).toBe(false)
+      expect(isDate(undefined)).toBe(false)
+      expect(isDate('')).toBe(false)
+    })
+
+    test('should narrow type correctly', () => {
+      const value: unknown = new Date()
+
+      if (isDate(value)) {
+        expectTypeOf(value).toEqualTypeOf<Date>()
+        expect(value.getTime()).toBeTypeOf('number')
       }
     })
   })
