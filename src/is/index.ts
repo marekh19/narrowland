@@ -10,7 +10,7 @@ import { isDefined, isFalsy, isNotNull, isTruthy } from './existence'
 import {
   isBigint,
   isBoolean,
-  isDate,
+  isInstanceOf,
   isNonEmptyString,
   isNumber,
   isString,
@@ -26,7 +26,7 @@ export const is = {
   number: isNumber,
   boolean: isBoolean,
   bigint: isBigint,
-  date: isDate,
+  instanceOf: isInstanceOf,
   array: isArray,
   nonEmptyArray: isNonEmptyArray,
   arrayOf: isArrayOf,
@@ -35,6 +35,7 @@ export const is = {
   isStringLiteral: isStringLiteral,
   oneOf: isOneOf,
   object: isObject,
+  instanceof: isInstanceOf,
 } as const
 
 export {
@@ -48,7 +49,7 @@ export {
   isTruthy,
   isBigint,
   isBoolean,
-  isDate,
+  isInstanceOf,
   isNonEmptyString,
   isStringLiteral,
   isNumber,

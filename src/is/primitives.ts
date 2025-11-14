@@ -27,15 +27,16 @@ export function isBoolean(value: unknown): value is boolean {
 }
 
 /**
- * Type guard that narrows a value to Date
- */
-export function isDate(value: unknown): value is Date {
-  return value instanceof Date
-}
-
-/**
  * Type guard that narrows a value to bigint
  */
 export function isBigint(value: unknown): value is bigint {
   return typeof value === 'bigint'
+}
+
+export function isInstanceOf<T>(
+  value: unknown,
+  // biome-ignore lint/suspicious/noExplicitAny: We want any here to allow usage for any Class contructor including the built-in like ErrorConstructor
+  ctor: new (...args: any[]) => T,
+): value is T {
+  return value instanceof ctor
 }

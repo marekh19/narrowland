@@ -3,7 +3,7 @@ import { describe, expect, expectTypeOf, test } from 'vitest'
 import {
   assertBigint,
   assertBoolean,
-  assertDate,
+  assertInstanceOf,
   assertNonEmptyString,
   assertNumber,
   assertString,
@@ -191,40 +191,6 @@ describe('assert/primitives', () => {
     })
   })
 
-  describe('assertDate', () => {
-    test('should not throw for Date objects', () => {
-      expect(() => assertDate(new Date())).not.toThrow()
-      expect(() => assertDate(new Date('2023-01-01'))).not.toThrow()
-      expect(() => assertDate(new Date(0))).not.toThrow()
-      // Invalid Date is still a Date object
-      expect(() => assertDate(new Date('invalid'))).not.toThrow()
-    })
-
-    test('should throw for non-Date values', () => {
-      expect(() => assertDate('2023-01-01')).toThrow('Expected a Date')
-      expect(() => assertDate(1234567890)).toThrow('Expected a Date')
-      expect(() => assertDate({})).toThrow('Expected a Date')
-      expect(() => assertDate(null)).toThrow('Expected a Date')
-      expect(() => assertDate(undefined)).toThrow('Expected a Date')
-      expect(() => assertDate('')).toThrow('Expected a Date')
-    })
-
-    test('should throw with custom message', () => {
-      expect(() => assertDate('2023-01-01', 'Value must be a Date')).toThrow(
-        'Value must be a Date',
-      )
-    })
-
-    test('should narrow type correctly', () => {
-      const value: unknown = new Date()
-
-      assertDate(value)
-
-      expectTypeOf(value).toEqualTypeOf<Date>()
-      expect(value.getTime()).toBeTypeOf('number')
-    })
-  })
-
   describe('assertBigint', () => {
     test('should not throw for bigint values', () => {
       expect(() => assertBigint(BigInt(0))).not.toThrow()
@@ -260,6 +226,181 @@ describe('assert/primitives', () => {
 
       expectTypeOf(value).toEqualTypeOf<bigint>()
       expect(value).toBe(42n)
+    })
+  })
+
+  describe('assertInstanceOf', () => {
+    // Custom classes for testing
+    class Animal {
+      constructor(public name: string) {}
+    }
+
+    class Dog extends Animal {
+      constructor(
+        name: string,
+        public breed: string,
+      ) {
+        super(name)
+      }
+    }
+
+    describe('happy paths', () => {
+      test('should not throw for Date objects', () => {
+        expect(() => assertInstanceOf(new Date(), Date)).not.toThrow()
+        expect(() =>
+          assertInstanceOf(new Date('2023-01-01'), Date),
+        ).not.toThrow()
+        expect(() => assertInstanceOf(new Date(0), Date)).not.toThrow()
+        // Invalid Date is still a Date object
+        expect(() => assertInstanceOf(new Date('invalid'), Date)).not.toThrow()
+      })
+
+      test('should not throw for Error objects', () => {
+        expect(() => assertInstanceOf(new Error('test'), Error)).not.toThrow()
+        expect(() =>
+          assertInstanceOf(new TypeError('test'), TypeError),
+        ).not.toThrow()
+        expect(() =>
+          assertInstanceOf(new TypeError('test'), Error),
+        ).not.toThrow() // TypeError extends Error
+        expect(() =>
+          assertInstanceOf(new ReferenceError('test'), ReferenceError),
+        ).not.toThrow()
+        expect(() =>
+          assertInstanceOf(new ReferenceError('test'), Error),
+        ).not.toThrow() // ReferenceError extends Error
+      })
+
+      test('should not throw for custom class instances', () => {
+        const animal = new Animal('Fluffy')
+        expect(() => assertInstanceOf(animal, Animal)).not.toThrow()
+      })
+
+      test('should not throw for extended class instances', () => {
+        const dog = new Dog('Buddy', 'Golden Retriever')
+        expect(() => assertInstanceOf(dog, Dog)).not.toThrow()
+        expect(() => assertInstanceOf(dog, Animal)).not.toThrow() // Dog extends Animal
+      })
+    })
+
+    describe('sad paths', () => {
+      test('should throw for non-Date values when checking Date', () => {
+        expect(() => assertInstanceOf('2023-01-01', Date)).toThrow(
+          'Expected instance of Date',
+        )
+        expect(() => assertInstanceOf(1234567890, Date)).toThrow(
+          'Expected instance of Date',
+        )
+        expect(() => assertInstanceOf({}, Date)).toThrow(
+          'Expected instance of Date',
+        )
+        expect(() => assertInstanceOf(null, Date)).toThrow(
+          'Expected instance of Date',
+        )
+        expect(() => assertInstanceOf(undefined, Date)).toThrow(
+          'Expected instance of Date',
+        )
+        expect(() => assertInstanceOf('', Date)).toThrow(
+          'Expected instance of Date',
+        )
+      })
+
+      test('should throw for non-Error values when checking Error', () => {
+        expect(() => assertInstanceOf('error', Error)).toThrow(
+          'Expected instance of Error',
+        )
+        expect(() => assertInstanceOf({ message: 'error' }, Error)).toThrow(
+          'Expected instance of Error',
+        )
+        expect(() => assertInstanceOf(null, Error)).toThrow(
+          'Expected instance of Error',
+        )
+        expect(() => assertInstanceOf(undefined, Error)).toThrow(
+          'Expected instance of Error',
+        )
+      })
+
+      test('should throw for non-instance values when checking custom classes', () => {
+        expect(() => assertInstanceOf({ name: 'Fluffy' }, Animal)).toThrow(
+          'Expected instance of Animal',
+        )
+        expect(() => assertInstanceOf('Fluffy', Animal)).toThrow(
+          'Expected instance of Animal',
+        )
+        expect(() => assertInstanceOf(null, Animal)).toThrow(
+          'Expected instance of Animal',
+        )
+        expect(() => assertInstanceOf(undefined, Animal)).toThrow(
+          'Expected instance of Animal',
+        )
+      })
+
+      test('should throw when checking wrong class hierarchy', () => {
+        const animal = new Animal('Fluffy')
+
+        // Animal is not a Dog
+        expect(() => assertInstanceOf(animal, Dog)).toThrow(
+          'Expected instance of Dog',
+        )
+      })
+    })
+
+    describe('custom error message', () => {
+      test('should throw with a custom message', () => {
+        expect(() =>
+          assertInstanceOf(new Animal('Fluffy'), Dog, 'Value must be a Dog'),
+        ).toThrow('Value must be a Dog')
+      })
+    })
+
+    describe('type narrowing', () => {
+      test('should narrow type correctly for Date', () => {
+        const value: unknown = new Date()
+
+        assertInstanceOf(value, Date)
+
+        expectTypeOf(value).toEqualTypeOf<Date>()
+        expect(value.getTime()).toBeTypeOf('number')
+      })
+
+      test('should narrow type correctly for Error', () => {
+        const value: unknown = new Error('test')
+
+        assertInstanceOf(value, Error)
+
+        expectTypeOf(value).toEqualTypeOf<Error>()
+        expect(value.message).toBe('test')
+        expect(value.stack).toBeDefined()
+      })
+
+      test('should narrow type correctly for custom class', () => {
+        const value: unknown = new Animal('Fluffy')
+
+        assertInstanceOf(value, Animal)
+
+        expectTypeOf(value).toEqualTypeOf<Animal>()
+        expect(value.name).toBe('Fluffy')
+      })
+
+      test('should narrow type correctly for extended class', () => {
+        const value: unknown = new Dog('Buddy', 'Golden Retriever')
+
+        assertInstanceOf(value, Dog)
+
+        expectTypeOf(value).toEqualTypeOf<Dog>()
+        expect(value.name).toBe('Buddy')
+        expect(value.breed).toBe('Golden Retriever')
+      })
+
+      test('should narrow type correctly for extended class checking base class', () => {
+        const value: unknown = new Dog('Buddy', 'Golden Retriever')
+
+        assertInstanceOf(value, Animal)
+
+        expectTypeOf(value).toEqualTypeOf<Animal>()
+        expect(value.name).toBe('Buddy')
+        // TypeScript knows it's at least an Animal, but not necessarily a Dog
+      })
     })
   })
 })

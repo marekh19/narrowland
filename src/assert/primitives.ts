@@ -43,16 +43,6 @@ export function assertBoolean(
 }
 
 /**
- * Assertion that narrows a value to Date
- */
-export function assertDate(
-  value: unknown,
-  message = 'Expected a Date',
-): asserts value is Date {
-  if (!(value instanceof Date)) raiseAssertError(message)
-}
-
-/**
  * Assertion that narrows a value to bigint
  */
 export function assertBigint(
@@ -60,4 +50,18 @@ export function assertBigint(
   message = 'Expected a bigint',
 ): asserts value is bigint {
   if (typeof value !== 'bigint') raiseAssertError(message)
+}
+
+/**
+ * Assertion that narrows a value to an instance of the given constructor
+ */
+export function assertInstanceOf<T>(
+  value: unknown,
+  // biome-ignore lint/suspicious/noExplicitAny: We want any here to allow usage for any Class contructor including the built-in like ErrorConstructor
+  ctor: new (...args: any[]) => T,
+  message?: string,
+): asserts value is T {
+  if (!(value instanceof ctor)) {
+    raiseAssertError(message ?? `Expected instance of ${ctor.name}`)
+  }
 }
