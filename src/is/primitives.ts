@@ -25,3 +25,11 @@ export function isNumber(value: unknown): value is number {
 export function isBoolean(value: unknown): value is boolean {
   return typeof value === 'boolean'
 }
+
+export function isInstanceOf<T>(
+  value: unknown,
+  // biome-ignore lint/suspicious/noExplicitAny: We want any here to allow usage for any Class contructor including the built-in like ErrorConstructor
+  ctor: new (...args: any[]) => T,
+): value is T {
+  return value instanceof ctor
+}

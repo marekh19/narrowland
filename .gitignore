@@ -13,4 +13,8 @@ storybook-static
 !.vscode/extensions.json
 .idea
 
+# Test
 coverage/
+
+# Misc
+.temp/

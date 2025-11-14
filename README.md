@@ -82,6 +82,7 @@ Type guards return `boolean` and narrow types without throwing errors. **Safer t
 | `is.nonEmptyString(value)` | `value is string` | Checks if value is a non-empty string |
 | `is.number(value)` | `value is number` | Checks if value is a finite number |
 | `is.boolean(value)` | `value is boolean` | Checks if value is a boolean |
+| `is.instanceOf(value, constructor)` | `value is T` | Checks if value is an instance of the given constructor |
 | `is.array(value)` | `value is T[]` | Checks if value is an array |
 | `is.nonEmptyArray(value)` | `value is [T, ...T[]]` | Checks if value is a non-empty array |
 | `is.arrayOf(value, guard)` | `value is T[]` | Checks if value is an array whose items satisfy the provided guard |
@@ -103,6 +104,7 @@ Assertions throw errors for invalid types and narrow types in the same scope. **
 | `assert.nonEmptyString(value, message?)` | `asserts value is string` | Throws if value is not a non-empty string |
 | `assert.number(value, message?)` | `asserts value is number` | Throws if value is not a finite number |
 | `assert.boolean(value, message?)` | `asserts value is boolean` | Throws if value is not a boolean |
+| `assert.instanceOf(value, constructor, message?)` | `asserts value is T` | Throws if value is not an instance of the given constructor |
 | `assert.array(value, message?)` | `asserts value is T[]` | Throws if value is not an array |
 | `assert.nonEmptyArray(value, message?)` | `asserts value is [T, ...T[]]` | Throws if value is not a non-empty array |
 | `assert.arrayOf(value, guard, message?)` | `asserts value is T[]` | Throws if value is not an array whose items satisfy the provided guard |
@@ -215,10 +217,15 @@ function calculateAge(birthYear: number) {
 ### Filtering Arrays
 
 ```typescript
-import { isString } from 'narrowland'
+import { isString, isInstanceOf } from 'narrowland'
 
+// Filter strings from mixed array
 const mixedArray = ['hello', 42, 'world', true]
 const strings = mixedArray.filter(isString) // TypeScript knows these are strings
+
+// Filter Date instances from mixed array
+const values = [new Date(), '2023-01-01', new Date('2024-01-01'), null, 42]
+const dates = values.filter((v) => isInstanceOf(v, Date)) // TypeScript knows `dates` is Date[]
 ```
 
 ### ArrayOf - Array Type Narrowing
@@ -264,7 +271,7 @@ if (isOneOf(value, allowedValues)) {
 
 ## 📊 Bundle Size
 
-- **Size**: 731 B (minified + brotli)
+- **Size**: 804 B (minified + brotli)
 - **Dependencies**: 0
 - **Tree-shakeable**: ✅ (import individual functions)
 - **ESM + CJS**: ✅
