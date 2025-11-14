@@ -26,6 +26,16 @@ export function isBoolean(value: unknown): value is boolean {
   return typeof value === 'boolean'
 }
 
+/**
+ * Type guard that narrows a value to bigint
+ */
+export function isBigint(value: unknown): value is bigint {
+  return typeof value === 'bigint'
+}
+
+/**
+ * Type guard that narrows a value to an instance of the given constructor
+ */
 export function isInstanceOf<T>(
   value: unknown,
   // biome-ignore lint/suspicious/noExplicitAny: We want any here to allow usage for any Class contructor including the built-in like ErrorConstructor

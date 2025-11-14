@@ -43,6 +43,16 @@ export function assertBoolean(
 }
 
 /**
+ * Assertion that narrows a value to bigint
+ */
+export function assertBigint(
+  value: unknown,
+  message = 'Expected a bigint',
+): asserts value is bigint {
+  if (typeof value !== 'bigint') raiseAssertError(message)
+}
+
+/**
  * Assertion that narrows a value to an instance of the given constructor
  */
 export function assertInstanceOf<T>(

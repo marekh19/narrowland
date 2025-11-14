@@ -1,6 +1,7 @@
 import { describe, expect, expectTypeOf, test } from 'vitest'
 
 import {
+  isBigint,
   isBoolean,
   isInstanceOf,
   isNonEmptyString,
@@ -102,6 +103,36 @@ describe('primitives', () => {
       if (isBoolean(value)) {
         expectTypeOf(value).toEqualTypeOf<boolean>()
         expect(value).toBe(true)
+      }
+    })
+  })
+
+  describe('isBigint', () => {
+    test('should return true for bigint values', () => {
+      expect(isBigint(BigInt(0))).toBe(true)
+      expect(isBigint(BigInt(42))).toBe(true)
+      expect(isBigint(BigInt(-1))).toBe(true)
+      expect(isBigint(BigInt('9007199254740991'))).toBe(true)
+      expect(isBigint(0n)).toBe(true)
+      expect(isBigint(42n)).toBe(true)
+    })
+
+    test('should return false for non-bigint values', () => {
+      expect(isBigint(0)).toBe(false)
+      expect(isBigint(42)).toBe(false)
+      expect(isBigint('42')).toBe(false)
+      expect(isBigint(true)).toBe(false)
+      expect(isBigint(null)).toBe(false)
+      expect(isBigint(undefined)).toBe(false)
+      expect(isBigint({})).toBe(false)
+    })
+
+    test('should narrow type correctly', () => {
+      const value: unknown = BigInt(42)
+
+      if (isBigint(value)) {
+        expectTypeOf(value).toEqualTypeOf<bigint>()
+        expect(value.toString()).toBe('42')
       }
     })
   })
