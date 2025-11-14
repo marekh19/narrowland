@@ -2,7 +2,7 @@ import { describe, expect, expectTypeOf, test } from 'vitest'
 
 import { isDefined, isFalsy, isNotNull, isTruthy } from './existence'
 
-describe('existence', () => {
+describe('is/existence', () => {
   describe('isDefined', () => {
     test('should return true for defined values', () => {
       expect(isDefined('hello')).toBe(true)
