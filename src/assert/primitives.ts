@@ -61,3 +61,13 @@ export function assertBigint(
 ): asserts value is bigint {
   if (typeof value !== 'bigint') raiseAssertError(message)
 }
+
+/**
+ * Assertion that narrows a value to symbol
+ */
+export function assertSymbol(
+  value: unknown,
+  message = 'Expected a symbol',
+): asserts value is symbol {
+  if (typeof value !== 'symbol') raiseAssertError(message)
+}

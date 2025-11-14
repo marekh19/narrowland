@@ -39,3 +39,10 @@ export function isDate(value: unknown): value is Date {
 export function isBigint(value: unknown): value is bigint {
   return typeof value === 'bigint'
 }
+
+/**
+ * Type guard that narrows a value to symbol
+ */
+export function isSymbol(value: unknown): value is symbol {
+  return typeof value === 'symbol'
+}

@@ -20,6 +20,7 @@ import {
   assertNonEmptyString,
   assertNumber,
   assertString,
+  assertSymbol,
 } from './primitives'
 
 export const assert = {
@@ -33,6 +34,7 @@ export const assert = {
   notNull: assertNotNull,
   boolean: assertBoolean,
   bigint: assertBigint,
+  symbol: assertSymbol,
   date: assertDate,
   nonEmptyString: assertNonEmptyString,
   stringLiteral: assertStringLiteral,
@@ -53,6 +55,7 @@ export {
   assertTruthy,
   assertBigint,
   assertBoolean,
+  assertSymbol,
   assertDate,
   assertNonEmptyString,
   assertStringLiteral,

@@ -7,6 +7,7 @@ import {
   assertNonEmptyString,
   assertNumber,
   assertString,
+  assertSymbol,
 } from './primitives'
 
 describe('assert/primitives', () => {
@@ -260,6 +261,41 @@ describe('assert/primitives', () => {
 
       expectTypeOf(value).toEqualTypeOf<bigint>()
       expect(value).toBe(42n)
+    })
+  })
+
+  describe('assertSymbol', () => {
+    test('should not throw for symbol values', () => {
+      expect(() => assertSymbol(Symbol())).not.toThrow()
+      expect(() => assertSymbol(Symbol('test'))).not.toThrow()
+      expect(() => assertSymbol(Symbol.for('key'))).not.toThrow()
+    })
+
+    test('should throw for non-symbol values', () => {
+      expect(() => assertSymbol('symbol')).toThrow('Expected a symbol')
+      expect(() => assertSymbol(42)).toThrow('Expected a symbol')
+      expect(() => assertSymbol(true)).toThrow('Expected a symbol')
+      expect(() => assertSymbol(null)).toThrow('Expected a symbol')
+      expect(() => assertSymbol(undefined)).toThrow('Expected a symbol')
+      expect(() => assertSymbol({})).toThrow('Expected a symbol')
+    })
+
+    test('should throw with custom message', () => {
+      expect(() => assertSymbol('symbol', 'Value must be a symbol')).toThrow(
+        'Value must be a symbol',
+      )
+      expect(() => assertSymbol(null, 'Value must be a symbol')).toThrow(
+        'Value must be a symbol',
+      )
+    })
+
+    test('should narrow type correctly', () => {
+      const value: unknown = Symbol('test')
+
+      assertSymbol(value)
+
+      expectTypeOf(value).toEqualTypeOf<symbol>()
+      expect(value.toString()).toContain('Symbol')
     })
   })
 })
