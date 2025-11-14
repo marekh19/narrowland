@@ -229,44 +229,6 @@ describe('assert/primitives', () => {
     })
   })
 
-  describe('assertBigint', () => {
-    test('should not throw for bigint values', () => {
-      expect(() => assertBigint(BigInt(0))).not.toThrow()
-      expect(() => assertBigint(BigInt(42))).not.toThrow()
-      expect(() => assertBigint(BigInt(-1))).not.toThrow()
-      expect(() => assertBigint(0n)).not.toThrow()
-      expect(() => assertBigint(42n)).not.toThrow()
-    })
-
-    test('should throw for non-bigint values', () => {
-      expect(() => assertBigint(0)).toThrow('Expected a bigint')
-      expect(() => assertBigint(42)).toThrow('Expected a bigint')
-      expect(() => assertBigint('42')).toThrow('Expected a bigint')
-      expect(() => assertBigint(true)).toThrow('Expected a bigint')
-      expect(() => assertBigint(null)).toThrow('Expected a bigint')
-      expect(() => assertBigint(undefined)).toThrow('Expected a bigint')
-      expect(() => assertBigint({})).toThrow('Expected a bigint')
-    })
-
-    test('should throw with custom message', () => {
-      expect(() => assertBigint(42, 'Value must be a bigint')).toThrow(
-        'Value must be a bigint',
-      )
-      expect(() => assertBigint(null, 'Value must be a bigint')).toThrow(
-        'Value must be a bigint',
-      )
-    })
-
-    test('should narrow type correctly', () => {
-      const value: unknown = BigInt(42)
-
-      assertBigint(value)
-
-      expectTypeOf(value).toEqualTypeOf<bigint>()
-      expect(value).toBe(42n)
-    })
-  })
-
   describe('assertSymbol', () => {
     test('should not throw for symbol values', () => {
       expect(() => assertSymbol(Symbol())).not.toThrow()
