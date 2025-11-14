@@ -1,5 +1,5 @@
 import { describe, expect, expectTypeOf, test } from 'vitest'
-
+import { isSymbol } from '../is/primitives'
 import {
   assertBigint,
   assertBoolean,
@@ -265,6 +265,32 @@ describe('assert/primitives', () => {
 
       expectTypeOf(value).toEqualTypeOf<bigint>()
       expect(value).toBe(42n)
+    })
+  })
+
+  describe('isSymbol', () => {
+    test('should return true for symbol values', () => {
+      expect(isSymbol(Symbol())).toBe(true)
+      expect(isSymbol(Symbol('test'))).toBe(true)
+      expect(isSymbol(Symbol.for('key'))).toBe(true)
+    })
+
+    test('should return false for non-symbol values', () => {
+      expect(isSymbol('symbol')).toBe(false)
+      expect(isSymbol(42)).toBe(false)
+      expect(isSymbol(true)).toBe(false)
+      expect(isSymbol(null)).toBe(false)
+      expect(isSymbol(undefined)).toBe(false)
+      expect(isSymbol({})).toBe(false)
+    })
+
+    test('should narrow type correctly', () => {
+      const value: unknown = Symbol('test')
+
+      if (isSymbol(value)) {
+        expectTypeOf(value).toEqualTypeOf<symbol>()
+        expect(value.toString()).toContain('Symbol')
+      }
     })
   })
 
