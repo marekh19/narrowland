@@ -53,3 +53,19 @@ export function isObject<T extends object = object>(
 ): value is T {
   return typeof value === 'object' && value !== null && !Array.isArray(value)
 }
+
+type PropNarrow<T, K extends PropertyKey, U> = T & {
+  [P in K]-?: Extract<(T & Record<K, unknown>)[P], U>
+}
+
+/**
+ * Type guard that narrow the given property of object to the provided type predicate.
+ */
+export function isPropertyOf<K extends PropertyKey, U>(
+  key: K,
+  predicate: (value: unknown) => value is U,
+) {
+  return <T extends Partial<Record<K, unknown>>>(
+    obj: T,
+  ): obj is PropNarrow<T, K, U> => predicate(obj[key])
+}

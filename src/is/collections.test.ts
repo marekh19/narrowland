@@ -6,6 +6,7 @@ import {
   isNonEmptyArray,
   isObject,
   isOneOf,
+  isPropertyOf,
   isStringLiteral,
 } from './collections'
 import { isDefined, isFalsy, isNotNull, isTruthy } from './existence'
@@ -499,6 +500,324 @@ describe('is/collections', () => {
         expect(typeof value).toBe('object')
         expect(value).not.toBeNull()
       }
+    })
+  })
+
+  describe('isPropertyOf', () => {
+    describe('happy paths', () => {
+      test('should return true when property matches predicate (string)', () => {
+        const hasName = isPropertyOf('name', isString)
+        expect(hasName({ name: 'John' })).toBe(true)
+        expect(hasName({ name: 'Jane', age: 30 })).toBe(true)
+      })
+
+      test('should return true when property matches predicate (number)', () => {
+        const hasAge = isPropertyOf('age', isNumber)
+        expect(hasAge({ age: 25 })).toBe(true)
+        expect(hasAge({ age: 0 })).toBe(true)
+        expect(hasAge({ age: -5 })).toBe(true)
+      })
+
+      test('should return true when property matches predicate (boolean)', () => {
+        const hasActive = isPropertyOf('active', isBoolean)
+        expect(hasActive({ active: true })).toBe(true)
+        expect(hasActive({ active: false })).toBe(true)
+      })
+
+      test('should return true when property matches predicate (non-empty string)', () => {
+        const hasNonEmptyName = isPropertyOf('name', isNonEmptyString)
+        expect(hasNonEmptyName({ name: 'John' })).toBe(true)
+        expect(hasNonEmptyName({ name: 'a' })).toBe(true)
+      })
+
+      test('should return true when property matches predicate (defined)', () => {
+        const hasDefinedId = isPropertyOf('id', isDefined)
+        expect(hasDefinedId({ id: 0 })).toBe(true)
+        expect(hasDefinedId({ id: '' })).toBe(true)
+        expect(hasDefinedId({ id: false })).toBe(true)
+      })
+
+      test('should work with nested objects', () => {
+        const hasNestedName = isPropertyOf(
+          'user',
+          (v): v is { name: string } =>
+            isObject(v) && isString((v as { name: unknown }).name),
+        )
+        expect(hasNestedName({ user: { name: 'John' } })).toBe(true)
+      })
+    })
+
+    describe('sad paths', () => {
+      test('should return false when property does not exist', () => {
+        const hasName = isPropertyOf('name', isString)
+        expect(hasName({})).toBe(false)
+        expect(hasName({ age: 30 } as { name?: unknown })).toBe(false)
+      })
+
+      test('should return false when property is wrong type (string vs number)', () => {
+        const hasAge = isPropertyOf('age', isNumber)
+        expect(hasAge({ age: '25' as unknown })).toBe(false)
+        expect(hasAge({ age: null })).toBe(false)
+        expect(hasAge({ age: undefined })).toBe(false)
+      })
+
+      test('should return false when property is wrong type (number vs string)', () => {
+        const hasName = isPropertyOf('name', isString)
+        expect(hasName({ name: 123 as unknown })).toBe(false)
+        expect(hasName({ name: null })).toBe(false)
+        expect(hasName({ name: undefined })).toBe(false)
+      })
+
+      test('should return false when property is empty string for non-empty predicate', () => {
+        const hasNonEmptyName = isPropertyOf('name', isNonEmptyString)
+        expect(hasNonEmptyName({ name: '' })).toBe(false)
+      })
+
+      test('should return false when property is null/undefined for defined predicate', () => {
+        const hasDefinedId = isPropertyOf('id', isDefined)
+        expect(hasDefinedId({ id: null })).toBe(false)
+        expect(hasDefinedId({ id: undefined })).toBe(false)
+      })
+
+      test('should return false when property is NaN or Infinity for number predicate', () => {
+        const hasAge = isPropertyOf('age', isNumber)
+        expect(hasAge({ age: NaN })).toBe(false)
+        expect(hasAge({ age: Number.POSITIVE_INFINITY })).toBe(false)
+        expect(hasAge({ age: Number.NEGATIVE_INFINITY })).toBe(false)
+      })
+
+      test('should throw when object is null/undefined (accessing property)', () => {
+        const hasName = isPropertyOf('name', isString)
+        expect(() => hasName(null as unknown as { name?: string })).toThrow()
+        expect(() =>
+          hasName(undefined as unknown as { name?: string }),
+        ).toThrow()
+      })
+    })
+
+    describe('type narrowing', () => {
+      test('should narrow property type to string', () => {
+        type User = { name?: string | number | null }
+        const user: User = { name: 'John' }
+        const hasName = isPropertyOf('name', isString)
+
+        if (hasName(user)) {
+          expectTypeOf(user.name).toEqualTypeOf<string>()
+          expect(user.name.toUpperCase()).toBe('JOHN')
+        }
+      })
+
+      test('should narrow property type to number', () => {
+        type Product = { price?: string | number | null }
+        const product: Product = { price: 99.99 }
+        const hasPrice = isPropertyOf('price', isNumber)
+
+        if (hasPrice(product)) {
+          expectTypeOf(product.price).toEqualTypeOf<number>()
+          expect(product.price.toFixed(2)).toBe('99.99')
+        }
+      })
+
+      test('should narrow property type to non-empty string', () => {
+        type Item = { title?: string | null }
+        const item: Item = { title: 'Hello' }
+        const hasTitle = isPropertyOf('title', isNonEmptyString)
+
+        if (hasTitle(item)) {
+          expectTypeOf(item.title).toEqualTypeOf<string>()
+          expect(item.title.length).toBeGreaterThan(0)
+        }
+      })
+
+      test('should narrow property type to defined value', () => {
+        type Item = { id?: string | null | undefined }
+        const item: Item = { id: '123' }
+        const hasId = isPropertyOf('id', isDefined)
+
+        if (hasId(item)) {
+          expectTypeOf(item.id).toEqualTypeOf<string>()
+          expect(item.id).toBe('123')
+        }
+      })
+
+      test('should preserve other properties in narrowed type', () => {
+        type User = { name?: string | number; age: number }
+        const user: User = { name: 'John', age: 30 }
+        const hasName = isPropertyOf('name', isString)
+
+        if (hasName(user)) {
+          expectTypeOf(user.name).toEqualTypeOf<string>()
+          expectTypeOf(user.age).toEqualTypeOf<number>()
+          expect(user.age).toBe(30)
+        }
+      })
+    })
+
+    describe('real-world examples - filtering arrays', () => {
+      test('should filter array of objects by string property', () => {
+        type User = { name?: string | null; role: string }
+        const users: User[] = [
+          { name: 'John', role: 'admin' },
+          { name: null, role: 'user' },
+          { name: 'Jane', role: 'admin' },
+          { role: 'user' },
+          { name: 'Bob', role: 'user' },
+        ]
+
+        const hasName = isPropertyOf('name', isString)
+        const usersWithNames = users.filter(hasName)
+
+        expect(usersWithNames).toHaveLength(3)
+        expect(usersWithNames.map((u) => u.name)).toEqual([
+          'John',
+          'Jane',
+          'Bob',
+        ])
+
+        // Type check: all filtered items should have name as string
+        usersWithNames.forEach((user) => {
+          expectTypeOf(user.name).toEqualTypeOf<string>()
+          expect(typeof user.name).toBe('string')
+        })
+      })
+
+      test('should filter array of objects by number property', () => {
+        type Product = { price?: number | string | null; category: string }
+        const products: Product[] = [
+          { price: 19.99, category: 'electronics' },
+          { price: null, category: 'books' },
+          { price: 29.99, category: 'electronics' },
+          { category: 'clothing' },
+          {
+            price: 'free' as unknown as number | string | null,
+            category: 'promo',
+          },
+        ]
+
+        const hasPrice = isPropertyOf('price', isNumber)
+        const productsWithPrices = products.filter(hasPrice)
+
+        expect(productsWithPrices).toHaveLength(2)
+        expect(productsWithPrices.map((p) => p.price)).toEqual([19.99, 29.99])
+
+        // Type check: all filtered items should have price as number
+        productsWithPrices.forEach((product) => {
+          expectTypeOf(product.price).toEqualTypeOf<number>()
+          expect(typeof product.price).toBe('number')
+        })
+      })
+
+      test('should filter array of objects by non-empty string property', () => {
+        type Post = { title?: string; published: boolean }
+        const posts: Post[] = [
+          { title: 'Hello World', published: true },
+          { title: '', published: false },
+          { title: 'Another Post', published: true },
+          { published: false },
+        ]
+
+        const hasTitle = isPropertyOf('title', isNonEmptyString)
+        const publishedPosts = posts.filter(hasTitle)
+
+        expect(publishedPosts).toHaveLength(2)
+        expect(publishedPosts.map((p) => p.title)).toEqual([
+          'Hello World',
+          'Another Post',
+        ])
+
+        // Type check: all filtered items should have title as non-empty string
+        publishedPosts.forEach((post) => {
+          expectTypeOf(post.title).toEqualTypeOf<string>()
+          expect(post.title.length).toBeGreaterThan(0)
+        })
+      })
+
+      test('should filter array of objects by defined property', () => {
+        type Item = { ownerId?: string | null; status: string }
+        const items: Item[] = [
+          { ownerId: 'user1', status: 'active' },
+          { ownerId: null, status: 'pending' },
+          { ownerId: 'user2', status: 'active' },
+          { status: 'inactive' },
+          { ownerId: undefined, status: 'pending' },
+        ]
+
+        const hasOwnerId = isPropertyOf('ownerId', isDefined)
+        const itemsWithOwner = items.filter(hasOwnerId)
+
+        expect(itemsWithOwner).toHaveLength(2)
+        expect(itemsWithOwner.map((i) => i.ownerId)).toEqual(['user1', 'user2'])
+
+        // Type check: all filtered items should have ownerId as defined
+        itemsWithOwner.forEach((item) => {
+          expectTypeOf(item.ownerId).toEqualTypeOf<string>()
+          expect(item.ownerId).toBeDefined()
+          expect(item.ownerId).not.toBeNull()
+        })
+      })
+
+      test('should filter array of objects with complex predicate', () => {
+        type User = { email?: string | null; verified: boolean }
+        const users: User[] = [
+          { email: 'john@example.com', verified: true },
+          { email: 'invalid', verified: false },
+          { email: 'jane@example.com', verified: true },
+          { verified: false },
+          { email: null, verified: false },
+        ]
+
+        const hasValidEmail = isPropertyOf(
+          'email',
+          (v): v is string => isString(v) && v.includes('@'),
+        )
+        const usersWithValidEmail = users.filter(hasValidEmail)
+
+        expect(usersWithValidEmail).toHaveLength(2)
+        expect(usersWithValidEmail.map((u) => u.email)).toEqual([
+          'john@example.com',
+          'jane@example.com',
+        ])
+
+        // Type check: all filtered items should have email as string
+        usersWithValidEmail.forEach((user) => {
+          expectTypeOf(user.email).toEqualTypeOf<string>()
+          expect(user.email).toContain('@')
+        })
+      })
+
+      test('should filter array of objects with multiple property checks', () => {
+        type Order = {
+          customerId?: string | null
+          total?: number | null
+          status: string
+        }
+        const orders: Order[] = [
+          { customerId: 'c1', total: 100, status: 'pending' },
+          { customerId: 'c2', total: null, status: 'pending' },
+          { customerId: null, total: 200, status: 'completed' },
+          { total: 150, status: 'pending' },
+          { customerId: 'c3', total: 300, status: 'completed' },
+        ]
+
+        const hasCustomerId = isPropertyOf('customerId', isString)
+        const hasTotal = isPropertyOf('total', isNumber)
+
+        const ordersWithCustomer = orders.filter(hasCustomerId)
+        const ordersWithTotal = orders.filter(hasTotal)
+        const ordersWithBoth = orders.filter(
+          (o) => hasCustomerId(o) && hasTotal(o),
+        )
+
+        expect(ordersWithCustomer).toHaveLength(3) // c1, c2, c3
+        expect(ordersWithTotal).toHaveLength(4) // 100, 200, 150, 300
+        expect(ordersWithBoth).toHaveLength(2) // c1+100, c3+300
+
+        // Type check: filtered items should have narrowed types
+        ordersWithBoth.forEach((order) => {
+          expectTypeOf(order.customerId).toEqualTypeOf<string>()
+          expectTypeOf(order.total).toEqualTypeOf<number>()
+        })
+      })
     })
   })
 })
