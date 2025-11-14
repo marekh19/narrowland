@@ -228,6 +228,19 @@ const values = [new Date(), '2023-01-01', new Date('2024-01-01'), null, 42]
 const dates = values.filter((v) => isInstanceOf(v, Date)) // TypeScript knows `dates` is Date[]
 ```
 
+### ArrayOf - Array Type Narrowing
+
+```typescript
+import { isArrayOf, isString } from 'narrowland'
+
+// Narrow array of strings
+const maybeStringArray: unknown = ['hello', 'world', 'typescript']
+if (isArrayOf(maybeStringArray, isString)) {
+  // maybeStringArray is now typed as string[]
+  const uppercased = maybeStringArray.map((s) => s.toUpperCase())
+}
+```
+
 ### OneOf - Union Type Narrowing
 
 ```typescript
