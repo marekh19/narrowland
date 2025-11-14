@@ -1,5 +1,4 @@
 import { describe, expect, expectTypeOf, test } from 'vitest'
-import { isSymbol } from '../is/primitives'
 import {
   assertBigint,
   assertBoolean,
@@ -268,29 +267,38 @@ describe('assert/primitives', () => {
     })
   })
 
-  describe('isSymbol', () => {
-    test('should return true for symbol values', () => {
-      expect(isSymbol(Symbol())).toBe(true)
-      expect(isSymbol(Symbol('test'))).toBe(true)
-      expect(isSymbol(Symbol.for('key'))).toBe(true)
+  describe('assertSymbol', () => {
+    test('should not throw for symbol values', () => {
+      expect(() => assertSymbol(Symbol())).not.toThrow()
+      expect(() => assertSymbol(Symbol('test'))).not.toThrow()
+      expect(() => assertSymbol(Symbol.for('key'))).not.toThrow()
     })
 
-    test('should return false for non-symbol values', () => {
-      expect(isSymbol('symbol')).toBe(false)
-      expect(isSymbol(42)).toBe(false)
-      expect(isSymbol(true)).toBe(false)
-      expect(isSymbol(null)).toBe(false)
-      expect(isSymbol(undefined)).toBe(false)
-      expect(isSymbol({})).toBe(false)
+    test('should throw for non-symbol values', () => {
+      expect(() => assertSymbol('symbol')).toThrow('Expected a symbol')
+      expect(() => assertSymbol(42)).toThrow('Expected a symbol')
+      expect(() => assertSymbol(true)).toThrow('Expected a symbol')
+      expect(() => assertSymbol(null)).toThrow('Expected a symbol')
+      expect(() => assertSymbol(undefined)).toThrow('Expected a symbol')
+      expect(() => assertSymbol({})).toThrow('Expected a symbol')
+    })
+
+    test('should throw with custom message', () => {
+      expect(() => assertSymbol('symbol', 'Value must be a symbol')).toThrow(
+        'Value must be a symbol',
+      )
+      expect(() => assertSymbol(null, 'Value must be a symbol')).toThrow(
+        'Value must be a symbol',
+      )
     })
 
     test('should narrow type correctly', () => {
       const value: unknown = Symbol('test')
 
-      if (isSymbol(value)) {
-        expectTypeOf(value).toEqualTypeOf<symbol>()
-        expect(value.toString()).toContain('Symbol')
-      }
+      assertSymbol(value)
+
+      expectTypeOf(value).toEqualTypeOf<symbol>()
+      expect(value.toString()).toContain('Symbol')
     })
   })
 
