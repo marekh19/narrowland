@@ -1,6 +1,7 @@
 export {
   assert,
   assertArray,
+  assertArrayOf,
   assertBoolean,
   assertDefined,
   assertFalsy,
@@ -19,6 +20,7 @@ export { ensure, invariant, type RaiseOptions, raiseError } from './errors'
 export {
   is,
   isArray,
+  isArrayOf,
   isBoolean,
   isDefined,
   isFalsy,

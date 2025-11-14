@@ -2,11 +2,14 @@ import { describe, expect, expectTypeOf, test } from 'vitest'
 
 import {
   isArray,
+  isArrayOf,
   isNonEmptyArray,
   isObject,
   isOneOf,
   isStringLiteral,
 } from './collections'
+import { isDefined, isFalsy, isNotNull, isTruthy } from './existence'
+import { isBoolean, isNonEmptyString, isNumber, isString } from './primitives'
 
 describe('collections', () => {
   describe('isArray', () => {
@@ -48,6 +51,124 @@ describe('collections', () => {
     })
   })
 
+  describe('isArrayOf', () => {
+    test('should return false for non-arrays', () => {
+      expect(isArrayOf('hello', isString)).toBe(false)
+      expect(isArrayOf(42, isNumber)).toBe(false)
+      expect(isArrayOf(true, isBoolean)).toBe(false)
+      expect(isArrayOf(null, isDefined)).toBe(false)
+      expect(isArrayOf(undefined, isNotNull)).toBe(false)
+      expect(isArrayOf({ a: 1 }, isObject)).toBe(false)
+    })
+
+    test('should validate strings', () => {
+      expect(isArrayOf(['a', 'b', 'c'], isString)).toBe(true)
+      expect(isArrayOf(['a', 1 as unknown], isString)).toBe(false)
+    })
+
+    test('should validate non-empty strings', () => {
+      expect(isArrayOf(['a', 'b'], isNonEmptyString)).toBe(true)
+      expect(isArrayOf(['a', ''], isNonEmptyString)).toBe(false)
+      expect(isArrayOf(['', ''], isNonEmptyString)).toBe(false)
+    })
+
+    test('should validate numbers (finite only)', () => {
+      expect(isArrayOf([0, 1, 2.5], isNumber)).toBe(true)
+      expect(isArrayOf([1, Number.POSITIVE_INFINITY], isNumber)).toBe(false)
+      expect(isArrayOf([1, NaN], isNumber)).toBe(false)
+    })
+
+    test('should validate booleans', () => {
+      expect(isArrayOf([true, false, true], isBoolean)).toBe(true)
+      expect(isArrayOf([true, 1 as unknown], isBoolean)).toBe(false)
+    })
+
+    test('should validate defined (exclude null and undefined)', () => {
+      expect(isArrayOf([0, '', false], isDefined)).toBe(true)
+      expect(isArrayOf([null], isDefined)).toBe(false)
+      expect(isArrayOf([undefined], isDefined)).toBe(false)
+      expect(isArrayOf([1, undefined] as unknown[], isDefined)).toBe(false)
+    })
+
+    test('should validate notNull (exclude only null)', () => {
+      expect(isArrayOf([undefined, 1] as unknown[], isNotNull)).toBe(true)
+      expect(isArrayOf([null], isNotNull)).toBe(false)
+      expect(isArrayOf([null, undefined] as unknown[], isNotNull)).toBe(false)
+    })
+
+    test('should validate truthy', () => {
+      expect(isArrayOf([1, 'a', true], isTruthy)).toBe(true)
+      expect(isArrayOf([1, 0] as unknown[], isTruthy)).toBe(false)
+      expect(isArrayOf(['', 'a'] as unknown[], isTruthy)).toBe(false)
+    })
+
+    test('should validate falsy', () => {
+      expect(isArrayOf([0, '', false, null, undefined], isFalsy)).toBe(true)
+      expect(isArrayOf([0, 1] as unknown[], isFalsy)).toBe(false)
+      expect(isArrayOf(['', 'a'] as unknown[], isFalsy)).toBe(false)
+    })
+
+    test('should validate arrays of arrays', () => {
+      expect(isArrayOf([[1], [2, 3]], isArray)).toBe(true)
+      expect(isArrayOf([[1], []], isNonEmptyArray)).toBe(false)
+      expect(isArrayOf([[1], ['a']], isArray)).toBe(true)
+      expect(isArrayOf([1, [2]] as unknown[], isArray)).toBe(false)
+    })
+
+    test('should validate arrays of non-empty arrays', () => {
+      expect(isArrayOf([[1], ['a']], isNonEmptyArray)).toBe(true)
+      expect(isArrayOf([[]] as unknown[], isNonEmptyArray)).toBe(false)
+    })
+
+    test('should validate objects (non-null, not arrays)', () => {
+      expect(isArrayOf([{}, { a: 1 }], isObject)).toBe(true)
+      expect(isArrayOf([null] as unknown[], isObject)).toBe(false)
+      expect(isArrayOf([[1]] as unknown[], isObject)).toBe(false)
+    })
+
+    test('should work with oneOf guard via wrapper', () => {
+      const isOneOf123 = (v: unknown): v is 1 | 2 | 3 =>
+        isOneOf(v, [1, 2, 3] as const)
+      expect(isArrayOf([1, 2, 3], isOneOf123)).toBe(true)
+      expect(isArrayOf([1, 4] as unknown[], isOneOf123)).toBe(false)
+    })
+
+    test('should narrow type for string arrays', () => {
+      const value: unknown = ['x', 'y']
+
+      if (isArrayOf(value, isString)) {
+        expectTypeOf(value).toEqualTypeOf<string[]>()
+        expect(value[0].toUpperCase()).toBe('X')
+      }
+    })
+
+    test('should narrow type for number arrays', () => {
+      const value: unknown = [1, 2, 3]
+
+      if (isArrayOf(value, isNumber)) {
+        expectTypeOf(value).toEqualTypeOf<number[]>()
+        expect(value.reduce((a, b) => a + b, 0)).toBe(6)
+      }
+    })
+
+    test('should narrow type using custom guard', () => {
+      type User = { id: number; name: string }
+      const isUser = (v: unknown): v is User =>
+        isObject(v) &&
+        typeof (v as { id: unknown }).id === 'number' &&
+        typeof (v as { name: unknown }).name === 'string'
+
+      const value: unknown = [
+        { id: 1, name: 'John' },
+        { id: 2, name: 'Jane' },
+      ]
+
+      if (isArrayOf(value, isUser)) {
+        expectTypeOf(value).toEqualTypeOf<User[]>()
+        expect(value[0].name).toBe('John')
+      }
+    })
+  })
   describe('isNonEmptyArray', () => {
     test('should return true for non-empty arrays', () => {
       expect(isNonEmptyArray([1])).toBe(true)

@@ -1,5 +1,6 @@
 import {
   assertArray,
+  assertArrayOf,
   assertNonEmptyArray,
   assertObject,
   assertOneOf,
@@ -22,6 +23,7 @@ import {
 export const assert = {
   array: assertArray,
   nonEmptyArray: assertNonEmptyArray,
+  arrayOf: assertArrayOf,
   object: assertObject,
   falsy: assertFalsy,
   truthy: assertTruthy,
@@ -39,6 +41,7 @@ export const assert = {
 export {
   assertArray,
   assertNonEmptyArray,
+  assertArrayOf,
   assertObject,
   assertDefined,
   assertFalsy,

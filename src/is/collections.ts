@@ -15,6 +15,16 @@ export function isNonEmptyArray<T = unknown>(
 }
 
 /**
+ * Type guard that narrows a value to an array whose elements satisfy the provided guard.
+ */
+export function isArrayOf<T>(
+  value: unknown,
+  guardFn: (item: unknown) => item is T,
+): value is T[] {
+  return Array.isArray(value) && value.every((item) => guardFn(item))
+}
+
+/**
  * @deprecated Use {@link isOneOf} instead.
  * This function will be removed in the next major release (v2.0.0).
  */
