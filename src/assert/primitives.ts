@@ -51,3 +51,13 @@ export function assertDate(
 ): asserts value is Date {
   if (!(value instanceof Date)) raiseAssertError(message)
 }
+
+/**
+ * Assertion that narrows a value to bigint
+ */
+export function assertBigint(
+  value: unknown,
+  message = 'Expected a bigint',
+): asserts value is bigint {
+  if (typeof value !== 'bigint') raiseAssertError(message)
+}

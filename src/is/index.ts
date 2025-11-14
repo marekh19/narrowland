@@ -8,6 +8,7 @@ import {
 } from './collections'
 import { isDefined, isFalsy, isNotNull, isTruthy } from './existence'
 import {
+  isBigint,
   isBoolean,
   isDate,
   isNonEmptyString,
@@ -24,6 +25,7 @@ export const is = {
   nonEmptyString: isNonEmptyString,
   number: isNumber,
   boolean: isBoolean,
+  bigint: isBigint,
   date: isDate,
   array: isArray,
   nonEmptyArray: isNonEmptyArray,
@@ -44,6 +46,7 @@ export {
   isFalsy,
   isNotNull,
   isTruthy,
+  isBigint,
   isBoolean,
   isDate,
   isNonEmptyString,

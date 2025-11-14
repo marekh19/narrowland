@@ -14,6 +14,7 @@ import {
 } from './existence'
 import { assertFromPredicate } from './fromPredicate'
 import {
+  assertBigint,
   assertBoolean,
   assertDate,
   assertNonEmptyString,
@@ -31,6 +32,7 @@ export const assert = {
   defined: assertDefined,
   notNull: assertNotNull,
   boolean: assertBoolean,
+  bigint: assertBigint,
   date: assertDate,
   nonEmptyString: assertNonEmptyString,
   stringLiteral: assertStringLiteral,
@@ -49,6 +51,7 @@ export {
   assertFalsy,
   assertNotNull,
   assertTruthy,
+  assertBigint,
   assertBoolean,
   assertDate,
   assertNonEmptyString,

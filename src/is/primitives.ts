@@ -32,3 +32,10 @@ export function isBoolean(value: unknown): value is boolean {
 export function isDate(value: unknown): value is Date {
   return value instanceof Date
 }
+
+/**
+ * Type guard that narrows a value to bigint
+ */
+export function isBigint(value: unknown): value is bigint {
+  return typeof value === 'bigint'
+}
