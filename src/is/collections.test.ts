@@ -11,7 +11,7 @@ import {
 import { isDefined, isFalsy, isNotNull, isTruthy } from './existence'
 import { isBoolean, isNonEmptyString, isNumber, isString } from './primitives'
 
-describe('collections', () => {
+describe('is/collections', () => {
   describe('isArray', () => {
     test('should return true for arrays', () => {
       expect(isArray([])).toBe(true)

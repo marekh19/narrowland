@@ -83,6 +83,7 @@ Type guards return `boolean` and narrow types without throwing errors. **Safer t
 | `is.number(value)` | `value is number` | Checks if value is a finite number |
 | `is.boolean(value)` | `value is boolean` | Checks if value is a boolean |
 | `is.bigint(value)` | `value is bigint` | Checks if value is a bigint |
+| `is.symbol(value)` | `value is symbol` | Checks if value is a symbol |
 | `is.instanceOf(value, constructor)` | `value is T` | Checks if value is an instance of the given constructor |
 | `is.array(value)` | `value is T[]` | Checks if value is an array |
 | `is.nonEmptyArray(value)` | `value is [T, ...T[]]` | Checks if value is a non-empty array |
@@ -106,6 +107,7 @@ Assertions throw errors for invalid types and narrow types in the same scope. **
 | `assert.number(value, message?)` | `asserts value is number` | Throws if value is not a finite number |
 | `assert.boolean(value, message?)` | `asserts value is boolean` | Throws if value is not a boolean |
 | `assert.bigint(value, message?)` | `asserts value is bigint` | Throws if value is not a bigint |
+| `assert.symbol(value, message?)` | `asserts value is symbol` | Throws if value is not a symbol |
 | `assert.instanceOf(value, constructor, message?)` | `asserts value is T` | Throws if value is not an instance of the given constructor |
 | `assert.array(value, message?)` | `asserts value is T[]` | Throws if value is not an array |
 | `assert.nonEmptyArray(value, message?)` | `asserts value is [T, ...T[]]` | Throws if value is not a non-empty array |
@@ -273,7 +275,7 @@ if (isOneOf(value, allowedValues)) {
 
 ## 📊 Bundle Size
 
-- **Size**: 804 B (minified + brotli)
+- **Size**: 851 B (minified + brotli)
 - **Dependencies**: 0
 - **Tree-shakeable**: ✅ (import individual functions)
 - **ESM + CJS**: ✅

@@ -53,6 +53,16 @@ export function assertBigint(
 }
 
 /**
+ * Assertion that narrows a value to symbol
+ */
+export function assertSymbol(
+  value: unknown,
+  message = 'Expected a symbol',
+): asserts value is symbol {
+  if (typeof value !== 'symbol') raiseAssertError(message)
+}
+
+/**
  * Assertion that narrows a value to an instance of the given constructor
  */
 export function assertInstanceOf<T>(

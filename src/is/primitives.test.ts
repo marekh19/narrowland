@@ -7,9 +7,10 @@ import {
   isNonEmptyString,
   isNumber,
   isString,
+  isSymbol,
 } from './primitives'
 
-describe('primitives', () => {
+describe('is/primitives', () => {
   describe('isString', () => {
     test('should return true for strings', () => {
       expect(isString('hello')).toBe(true)
@@ -133,6 +134,32 @@ describe('primitives', () => {
       if (isBigint(value)) {
         expectTypeOf(value).toEqualTypeOf<bigint>()
         expect(value.toString()).toBe('42')
+      }
+    })
+  })
+
+  describe('isSymbol', () => {
+    test('should return true for symbol values', () => {
+      expect(isSymbol(Symbol())).toBe(true)
+      expect(isSymbol(Symbol('test'))).toBe(true)
+      expect(isSymbol(Symbol.for('key'))).toBe(true)
+    })
+
+    test('should return false for non-symbol values', () => {
+      expect(isSymbol('symbol')).toBe(false)
+      expect(isSymbol(42)).toBe(false)
+      expect(isSymbol(true)).toBe(false)
+      expect(isSymbol(null)).toBe(false)
+      expect(isSymbol(undefined)).toBe(false)
+      expect(isSymbol({})).toBe(false)
+    })
+
+    test('should narrow type correctly', () => {
+      const value: unknown = Symbol('test')
+
+      if (isSymbol(value)) {
+        expectTypeOf(value).toEqualTypeOf<symbol>()
+        expect(value.toString()).toContain('Symbol')
       }
     })
   })

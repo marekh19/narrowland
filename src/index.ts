@@ -16,6 +16,7 @@ export {
   assertOneOf,
   assertString,
   assertStringLiteral,
+  assertSymbol,
   assertTruthy,
 } from './assert'
 export { ensure, invariant, type RaiseOptions, raiseError } from './errors'
@@ -36,5 +37,6 @@ export {
   isOneOf,
   isString,
   isStringLiteral,
+  isSymbol,
   isTruthy,
 } from './is'

@@ -14,6 +14,7 @@ import {
   isNonEmptyString,
   isNumber,
   isString,
+  isSymbol,
 } from './primitives'
 
 export const is = {
@@ -26,6 +27,7 @@ export const is = {
   number: isNumber,
   boolean: isBoolean,
   bigint: isBigint,
+  symbol: isSymbol,
   instanceOf: isInstanceOf,
   array: isArray,
   nonEmptyArray: isNonEmptyArray,
@@ -49,6 +51,7 @@ export {
   isTruthy,
   isBigint,
   isBoolean,
+  isSymbol,
   isInstanceOf,
   isNonEmptyString,
   isStringLiteral,

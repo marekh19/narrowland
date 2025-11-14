@@ -34,6 +34,13 @@ export function isBigint(value: unknown): value is bigint {
 }
 
 /**
+ * Type guard that narrows a value to symbol
+ */
+export function isSymbol(value: unknown): value is symbol {
+  return typeof value === 'symbol'
+}
+
+/**
  * Type guard that narrows a value to an instance of the given constructor
  */
 export function isInstanceOf<T>(
