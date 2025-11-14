@@ -221,6 +221,19 @@ const mixedArray = ['hello', 42, 'world', true]
 const strings = mixedArray.filter(isString) // TypeScript knows these are strings
 ```
 
+### ArrayOf - Array Type Narrowing
+
+```typescript
+import { isArrayOf, isString } from 'narrowland'
+
+// Narrow array of strings
+const maybeStringArray: unknown = ['hello', 'world', 'typescript']
+if (isArrayOf(maybeStringArray, isString)) {
+  // maybeStringArray is now typed as string[]
+  const uppercased = maybeStringArray.map((s) => s.toUpperCase())
+}
+```
+
 ### OneOf - Union Type Narrowing
 
 ```typescript
