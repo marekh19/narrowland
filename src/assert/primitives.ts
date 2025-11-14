@@ -43,11 +43,15 @@ export function assertBoolean(
 }
 
 /**
- * Assertion that narrows a value to Date
+ * Assertion that narrows a value to an instance of the given constructor
  */
-export function assertDate(
+export function assertInstanceOf<T>(
   value: unknown,
-  message = 'Expected a Date',
-): asserts value is Date {
-  if (!(value instanceof Date)) raiseAssertError(message)
+  // biome-ignore lint/suspicious/noExplicitAny: We want any here to allow usage for any Class contructor including the built-in like ErrorConstructor
+  ctor: new (...args: any[]) => T,
+  message?: string,
+): asserts value is T {
+  if (!(value instanceof ctor)) {
+    raiseAssertError(message ?? `Expected instance of ${ctor.name}`)
+  }
 }

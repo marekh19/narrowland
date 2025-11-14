@@ -15,7 +15,7 @@ import {
 import { assertFromPredicate } from './fromPredicate'
 import {
   assertBoolean,
-  assertDate,
+  assertInstanceOf,
   assertNonEmptyString,
   assertNumber,
   assertString,
@@ -31,7 +31,7 @@ export const assert = {
   defined: assertDefined,
   notNull: assertNotNull,
   boolean: assertBoolean,
-  date: assertDate,
+  instanceOf: assertInstanceOf,
   nonEmptyString: assertNonEmptyString,
   stringLiteral: assertStringLiteral,
   oneOf: assertOneOf,
@@ -50,7 +50,7 @@ export {
   assertNotNull,
   assertTruthy,
   assertBoolean,
-  assertDate,
+  assertInstanceOf,
   assertNonEmptyString,
   assertStringLiteral,
   assertNumber,
