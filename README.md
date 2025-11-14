@@ -82,6 +82,7 @@ Type guards return `boolean` and narrow types without throwing errors. **Safer t
 | `is.nonEmptyString(value)` | `value is string` | Checks if value is a non-empty string |
 | `is.number(value)` | `value is number` | Checks if value is a finite number |
 | `is.boolean(value)` | `value is boolean` | Checks if value is a boolean |
+| `is.bigint(value)` | `value is bigint` | Checks if value is a bigint |
 | `is.instanceOf(value, constructor)` | `value is T` | Checks if value is an instance of the given constructor |
 | `is.array(value)` | `value is T[]` | Checks if value is an array |
 | `is.nonEmptyArray(value)` | `value is [T, ...T[]]` | Checks if value is a non-empty array |
@@ -104,6 +105,7 @@ Assertions throw errors for invalid types and narrow types in the same scope. **
 | `assert.nonEmptyString(value, message?)` | `asserts value is string` | Throws if value is not a non-empty string |
 | `assert.number(value, message?)` | `asserts value is number` | Throws if value is not a finite number |
 | `assert.boolean(value, message?)` | `asserts value is boolean` | Throws if value is not a boolean |
+| `assert.bigint(value, message?)` | `asserts value is bigint` | Throws if value is not a bigint |
 | `assert.instanceOf(value, constructor, message?)` | `asserts value is T` | Throws if value is not an instance of the given constructor |
 | `assert.array(value, message?)` | `asserts value is T[]` | Throws if value is not an array |
 | `assert.nonEmptyArray(value, message?)` | `asserts value is [T, ...T[]]` | Throws if value is not a non-empty array |
