@@ -618,6 +618,18 @@ describe('is/collections', () => {
         }
       })
 
+      test('should narrow property type to boolean', () => {
+        type Item = { name: string; isInStock?: unknown }
+        const item: Item = { name: 'item' }
+        const isInStock = isPropertyOf('isInStock', isBoolean)
+
+        if (isInStock(item)) {
+          expectTypeOf(item.isInStock).toEqualTypeOf<boolean>()
+          expect(item.name).toBeDefined()
+          expect(item.isInStock).not.toBeDefined()
+        }
+      })
+
       test('should narrow property type to non-empty string', () => {
         type Item = { title?: string | null }
         const item: Item = { title: 'Hello' }
