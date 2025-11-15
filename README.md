@@ -91,6 +91,7 @@ Type guards return `boolean` and narrow types without throwing errors. **Safer t
 | `is.stringLiteral(value, literals)` ⚠️ | `value is T[number]` | Checks if value is a member of string literals array (deprecated: use `is.oneOf` instead, will be removed in v2.0.0) |
 | `is.oneOf(value, collection)` | `value is T[number]` | Checks if value is a member of the provided collection (works with any type) |
 | `is.object(value)` | `value is T` | Checks if value is a plain object |
+| `is.propertyOf(key, predicate)` | `obj is T & { [P in K]-?: U }` | Checks that the selected property satisfies the provided predicate and makes it required |
 
 ### Type Assertions (`assert.*`)
 
@@ -232,6 +233,32 @@ const values = [new Date(), '2023-01-01', new Date('2024-01-01'), null, 42]
 const dates = values.filter((v) => isInstanceOf(v, Date)) // TypeScript knows `dates` is Date[]
 ```
 
+### Property Guards - Filter Objects by Required Keys
+
+```typescript
+import { isDefined, isPropertyOf } from 'narrowland'
+
+type User = {
+  id: string
+  email?: string | null
+}
+
+const users: User[] = [
+  { id: '1', email: 'one@example.com' },
+  { id: '2', email: null },
+  { id: '3' },
+]
+
+const hasEmail = isPropertyOf('email', isDefined)
+
+const contactableUsers = users.filter(hasEmail)
+// ?^ contactableUsers is typed as PropNarrow<User, "email", {}>[]
+contactableUsers.forEach((user) => {
+  user.email.toLowerCase()
+  // ?^ user.email is typed as string
+})
+```
+
 ### ArrayOf - Array Type Narrowing
 
 ```typescript
@@ -275,7 +302,7 @@ if (isOneOf(value, allowedValues)) {
 
 ## 📊 Bundle Size
 
-- **Size**: 851 B (minified + brotli)
+- **Size**: 862 B (minified + brotli)
 - **Dependencies**: 0
 - **Tree-shakeable**: ✅ (import individual functions)
 - **ESM + CJS**: ✅
