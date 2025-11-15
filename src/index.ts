@@ -35,6 +35,7 @@ export {
   isNumber,
   isObject,
   isOneOf,
+  isPropertyOf,
   isString,
   isStringLiteral,
   isSymbol,

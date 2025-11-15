@@ -4,6 +4,7 @@ import {
   isNonEmptyArray,
   isObject,
   isOneOf,
+  isPropertyOf,
   isStringLiteral,
 } from './collections'
 import { isDefined, isFalsy, isNotNull, isTruthy } from './existence'
@@ -38,6 +39,7 @@ export const is = {
   oneOf: isOneOf,
   object: isObject,
   instanceof: isInstanceOf,
+  propertyOf: isPropertyOf,
 } as const
 
 export {
@@ -58,4 +60,5 @@ export {
   isNumber,
   isString,
   isOneOf,
+  isPropertyOf,
 }
