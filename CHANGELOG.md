@@ -1,5 +1,18 @@
 # narrowland
 
+## 1.3.0
+
+### Minor Changes
+
+- Add `is.symbol` type guard and `assert.symbol` assertion
+- Add `is.bigint` type guard and `assert.bigint` assertion
+- Add `is.instanceOf` type guard and `assert.instanceOf` assertion
+  - Can be used to narrow a value to be an instance of a given constructor - e.g. as a predicate for `Array.filter()`
+- Add `is.arrayOf` type guard and `assert.arrayOf` assertion
+  - Can be used to narrow a value to be an array whose items satisfy a provided type guard - e.g. to narrow `unknown[]` to `string[]`.
+- Add `is.propertyOf` higher-order guard to narrow individual object properties via any predicate.
+  - Use it to enforce per-property constraints while keeping the rest of the shape intact, e.g. `const hasStringName = is.propertyOf('name', is.string)` now guarantees that name exists and is a string whenever the guard passes.
+
 ## 1.2.1
 
 ### Patch Changes
