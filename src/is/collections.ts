@@ -54,8 +54,12 @@ export function isObject<T extends object = object>(
   return typeof value === 'object' && value !== null && !Array.isArray(value)
 }
 
+/**
+ * Narrows property K of type T to type U, making it required.
+ * Preserves all other properties from T.
+ */
 type PropNarrow<T, K extends PropertyKey, U> = T & {
-  [P in K]-?: Extract<(T & Record<K, unknown>)[P], U>
+  [P in K]: U
 }
 
 /**
