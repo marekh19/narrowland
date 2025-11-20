@@ -92,6 +92,7 @@ Type guards return `boolean` and narrow types without throwing errors. **Safer t
 | `is.oneOf(value, collection)` | `value is T[number]` | Checks if value is a member of the provided collection (works with any type) |
 | `is.object(value)` | `value is T` | Checks if value is a plain object |
 | `is.propertyOf(key, predicate)` | `obj is T & { [P in K]-?: U }` | Checks that the selected property satisfies the provided predicate and makes it required |
+| `is.keyOf(value, record)` | `value is T & keyof U` | Checks if value is a key of the provided record |
 
 ### Type Assertions (`assert.*`)
 
@@ -116,6 +117,7 @@ Assertions throw errors for invalid types and narrow types in the same scope. **
 | `assert.stringLiteral(value, literals, message?)` ⚠️ | `value is T[number]` | Throws if value is not a member of provided string literals array (deprecated: use `assert.oneOf` instead, will be removed in v2.0.0) |
 | `assert.oneOf(value, collection, message?)` | `asserts value is T[number]` | Throws if value is not a member of the provided collection (works with any type) |
 | `assert.object(value, message?)` | `asserts value is T` | Throws if value is not a plain object |
+| `assert.keyOf(value, record, message?)` | `asserts value is T & keyof U` | Throws if value is not a key of the provided record |
 | `assert.fromPredicate(predicate, message?)` | `(value, message?) => asserts value is T` | Creates custom assertion from predicate |
 
 ### Invariant Utilities
@@ -300,9 +302,32 @@ if (isOneOf(value, allowedValues)) {
 }
 ```
 
+### KeyOf - Safe Object Key Access
+
+```typescript
+import { isKeyOf, assertKeyOf } from 'narrowland'
+
+const handlers = {
+  click: () => 'clicked',
+  submit: () => 'submitted',
+} as const
+
+// Type guard - returns boolean
+const eventName = 'click' as string
+if (isKeyOf(eventName, handlers)) {
+  // eventName is now typed as 'click' | 'submit'
+  handlers[eventName]() // Safe to call
+}
+
+// Assertion - throws if invalid
+assertKeyOf(eventName, handlers)
+// eventName is now typed as 'click' | 'submit'
+handlers[eventName]() // Safe to call
+```
+
 ## 📊 Bundle Size
 
-- **Size**: 862 B (minified + brotli)
+- **Size**: 902 B (minified + brotli)
 - **Dependencies**: 0
 - **Tree-shakeable**: ✅ (import individual functions)
 - **ESM + CJS**: ✅

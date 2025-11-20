@@ -63,7 +63,7 @@ type PropNarrow<T, K extends PropertyKey, U> = T & {
 }
 
 /**
- * Type guard that narrow the given property of object to the provided type predicate.
+ * Type guard that narrows the given property of object to the provided type predicate.
  */
 export function isPropertyOf<K extends PropertyKey, U>(
   key: K,
@@ -72,4 +72,14 @@ export function isPropertyOf<K extends PropertyKey, U>(
   return <T extends Partial<Record<K, unknown>>>(
     obj: T,
   ): obj is PropNarrow<T, K, U> => predicate(obj[key])
+}
+
+/**
+ * Type guard that narrows the given value to be a property of provided object.
+ */
+export function isKeyOf<
+  T extends PropertyKey,
+  const U extends Record<PropertyKey, unknown>,
+>(value: T, record: U): value is T & keyof U {
+  return Object.hasOwn(record, value)
 }

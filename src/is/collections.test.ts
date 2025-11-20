@@ -3,6 +3,7 @@ import { describe, expect, expectTypeOf, test } from 'vitest'
 import {
   isArray,
   isArrayOf,
+  isKeyOf,
   isNonEmptyArray,
   isObject,
   isOneOf,
@@ -829,6 +830,228 @@ describe('is/collections', () => {
           expectTypeOf(order.customerId).toEqualTypeOf<string>()
           expectTypeOf(order.total).toEqualTypeOf<number>()
         })
+      })
+    })
+  })
+
+  describe('isKeyOf', () => {
+    describe('happy paths', () => {
+      test('should return true for a string key if present in object', () => {
+        const obj = { a: 'a' } as const
+        expect(isKeyOf('a', obj)).toBe(true)
+      })
+
+      test('should return true for a number key if present in object', () => {
+        const obj = { 1: 'a' } as const
+        expect(isKeyOf(1, obj)).toBe(true)
+        // in case of number keys for as well for stringified number
+        expect(isKeyOf((1).toString(), obj)).toBe(true)
+        expect(isKeyOf('1', obj)).toBe(true)
+      })
+
+      test('should return true for a unique symbol key if present in object', () => {
+        const symbol = Symbol('a')
+        const obj = { [symbol]: 'a' } as const
+        expect(isKeyOf(symbol, obj)).toBe(true)
+      })
+
+      test('should return true for a global symbol key if present in object', () => {
+        const symbol = Symbol.for('a')
+        const obj = { [symbol]: 'a' }
+        expect(isKeyOf(Symbol.for('a'), obj)).toBe(true)
+      })
+
+      test('should return true for own properties but not inherited ones', () => {
+        const proto = { inherited: 'value' } as const
+        const obj = Object.assign(Object.create(proto), { own: 'own' } as const)
+
+        expect(isKeyOf('own', obj)).toBe(true)
+        expect(isKeyOf('inherited', obj)).toBe(false)
+      })
+
+      test('should work with objects created with null prototype', () => {
+        const obj = Object.assign(Object.create(null), { safe: true })
+        expect(isKeyOf('safe', obj)).toBe(true)
+        expect(isKeyOf('missing', obj)).toBe(false)
+      })
+    })
+
+    describe('sad paths', () => {
+      test('should return false if string key not present in object', () => {
+        const obj = { a: 'a' } as const
+        expect(isKeyOf('b', obj)).toBe(false)
+      })
+
+      test('should return false if number key not present in object', () => {
+        const obj = { 1: 'a' } as const
+        expect(isKeyOf(2, obj)).toBe(false)
+      })
+
+      test('should return false if symbol key not present in object', () => {
+        const symbol = Symbol('a')
+        const obj = { [Symbol('a')]: 'a' } as const
+        expect(isKeyOf(symbol, obj)).toBe(false)
+      })
+
+      test('should return false if string key is not matching casing', () => {
+        const obj = { a: 'a' } as const
+        expect(isKeyOf('A', obj)).toBe(false)
+      })
+
+      test('should throw when record is null or undefined', () => {
+        const obj1 = null as unknown as Record<string, string>
+        const obj2 = undefined as unknown as Record<string, string>
+        expect(() => isKeyOf('foo', obj1)).toThrow()
+        expect(() => isKeyOf('foo', obj2)).toThrow()
+      })
+    })
+
+    describe('type narrowing', () => {
+      test('should narrow PropertyKey to keyof record', () => {
+        const record = { foo: 1, bar: 2 } as const
+        const key: PropertyKey = 'foo'
+
+        if (isKeyOf(key, record)) {
+          expectTypeOf(key).toEqualTypeOf<'foo' | 'bar'>()
+          expect(record[key]).toBe(1)
+        }
+      })
+
+      test('should narrow string to keyof record', () => {
+        const record = { click: 'click', submit: 'submit' } as const
+        const key: string = 'click'
+
+        if (isKeyOf(key, record)) {
+          expectTypeOf(key).toEqualTypeOf<'click' | 'submit'>()
+          expect(record[key]).toBe('click')
+        }
+      })
+
+      test('should narrow string to keyof readonly record', () => {
+        const record: Readonly<Record<'click' | 'submit', string>> = {
+          click: 'click',
+          submit: 'submit',
+        }
+        const key: string = 'click'
+
+        if (isKeyOf(key, record)) {
+          expectTypeOf(key).toEqualTypeOf<'click' | 'submit'>()
+          expect(record[key]).toBe('click')
+        }
+      })
+
+      test('should narrow union of potential keys down to actual keys', () => {
+        const record = { foo: 1, bar: 2 } as const
+
+        // Test when key exists
+        const key1 = 'foo' as 'foo' | 'baz'
+        if (isKeyOf(key1, record)) {
+          expectTypeOf(key1).toEqualTypeOf<'foo'>()
+          expect(record[key1]).toBe(1)
+        }
+
+        // Test when key doesn't exist
+        const key2 = 'baz' as 'foo' | 'baz' | 'boo'
+        if (isKeyOf(key2, record)) {
+          // This branch won't execute since 'baz' is not a key
+          expectTypeOf(key2).toEqualTypeOf<'foo'>()
+          expect.fail('Should not reach here')
+        } else {
+          // In else branch, type should be 'baz' or 'boo' since we extracted out the common literal = we know it can't be 'foo'
+          expectTypeOf(key2).toEqualTypeOf<'baz' | 'boo'>()
+          expect(key2).toBe('baz')
+        }
+      })
+
+      test('should narrow numeric keys correctly', () => {
+        const record = { 0: 'zero', 1: 'one', other: 'other' } as const
+
+        // Test when key exists - type narrowing allows safe access
+        const key1 = 0 as 0 | 1 | 2
+        if (isKeyOf(key1, record)) {
+          // Type is narrowed to allow safe access (0 | 1, excluding 2 and 'other')
+          expectTypeOf(record[key1]).toEqualTypeOf<'zero' | 'one'>()
+          expect(record[key1]).toBe('zero')
+          // Verify we can access both numeric keys
+          if (key1 === 0) {
+            expectTypeOf(record[key1]).toEqualTypeOf<'zero'>()
+            expect(record[key1]).toBe('zero')
+          } else {
+            expectTypeOf(record[key1]).toEqualTypeOf<'one'>()
+            expect(record[key1]).toBe('one')
+          }
+        }
+
+        // Test when key doesn't exist
+        const key2 = 2 as 0 | 1 | 2
+        if (isKeyOf(key2, record)) {
+          expectTypeOf(key2).toEqualTypeOf<0 | 1>()
+          expect.fail('Should not reach here')
+        } else {
+          // In else branch, type should remain as original union
+          expectTypeOf(key2).toEqualTypeOf<2>()
+          expect(key2).toBe(2)
+        }
+
+        if (!isKeyOf(key2, record)) {
+          expectTypeOf(key2).toEqualTypeOf<2>()
+          expect(key2).toBe(2)
+        }
+      })
+    })
+
+    describe('real world scenarios', () => {
+      test('should safely access configuration flags', () => {
+        const featureFlags = {
+          enableCheckout: true,
+          enableBeta: false,
+        } as const
+
+        const incomingFlag = 'enableCheckout' as string
+        if (isKeyOf(incomingFlag, featureFlags)) {
+          expectTypeOf(incomingFlag).toEqualTypeOf<
+            'enableCheckout' | 'enableBeta'
+          >()
+          expect(typeof featureFlags[incomingFlag]).toBe('boolean')
+          expect(featureFlags[incomingFlag]).toBe(true)
+        }
+      })
+
+      test('should guard dynamic access when dispatching event handlers', () => {
+        const handlers = {
+          click: () => 'clicked',
+          submit: () => 'submitted',
+        } as const
+
+        const events = ['click', 'keydown', 'submit']
+        const results = [] as string[]
+
+        for (const eventName of events) {
+          if (isKeyOf(eventName, handlers)) {
+            expectTypeOf(eventName).toEqualTypeOf<'click' | 'submit'>()
+            results.push(handlers[eventName]())
+          }
+        }
+
+        expect(results).toEqual(['clicked', 'submitted'])
+      })
+
+      test('should filter object entries by safe keys', () => {
+        const translations = {
+          hello: 'Hello',
+          goodbye: 'Goodbye',
+        } as const
+
+        const requestedKeys = ['hello', 'missing'] as const
+        const available = requestedKeys.filter((key) =>
+          isKeyOf(key, translations),
+        )
+        const first = available[0]
+
+        expectTypeOf(available).toEqualTypeOf<'hello'[]>()
+        expect(available).toEqual(['hello'])
+        expectTypeOf(first).toEqualTypeOf<'hello'>()
+        expect(first).toBe('hello')
       })
     })
   })
