@@ -1,6 +1,7 @@
 import {
   assertArray,
   assertArrayOf,
+  assertKeyOf,
   assertNonEmptyArray,
   assertObject,
   assertOneOf,
@@ -42,6 +43,7 @@ export const assert = {
   number: assertNumber,
   string: assertString,
   fromPredicate: assertFromPredicate,
+  keyof: assertKeyOf,
 }
 
 export {
@@ -63,4 +65,5 @@ export {
   assertString,
   assertFromPredicate,
   assertOneOf,
+  assertKeyOf,
 }

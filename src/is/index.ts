@@ -1,6 +1,7 @@
 import {
   isArray,
   isArrayOf,
+  isKeyOf,
   isNonEmptyArray,
   isObject,
   isOneOf,
@@ -40,6 +41,7 @@ export const is = {
   object: isObject,
   instanceof: isInstanceOf,
   propertyOf: isPropertyOf,
+  keyOf: isKeyOf,
 } as const
 
 export {
@@ -61,4 +63,5 @@ export {
   isString,
   isOneOf,
   isPropertyOf,
+  isKeyOf,
 }

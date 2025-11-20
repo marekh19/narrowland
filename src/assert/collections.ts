@@ -44,7 +44,7 @@ export function assertStringLiteral<const T extends readonly string[]>(
 ): asserts value is T[number] {
   if (typeof value !== 'string' || !literals.includes(value)) {
     raiseAssertError(
-      message ?? `Expected one of folowing values: ${literals.join(', ')}.`,
+      message ?? `Expected one of following values: ${literals.join(', ')}.`,
     )
   }
 }
@@ -59,7 +59,7 @@ export function assertOneOf<T, const U extends readonly T[]>(
 ): asserts value is U[number] {
   if (!collection.includes(value)) {
     raiseAssertError(
-      message ?? `Expected one of folowing values: ${collection.join(', ')}.`,
+      message ?? `Expected one of following values: ${collection.join(', ')}.`,
     )
   }
 }
@@ -73,5 +73,20 @@ export function assertObject<T extends object = object>(
 ): asserts value is T {
   if (typeof value !== 'object' || value === null || Array.isArray(value)) {
     raiseAssertError(message)
+  }
+}
+
+/**
+ * Assertion that narrows the given value to be a property of provided object.
+ */
+export function assertKeyOf<
+  T extends PropertyKey,
+  const U extends Record<PropertyKey, unknown>,
+>(value: T, record: U, message?: string): asserts value is T & keyof U {
+  if (!Object.hasOwn(record, value)) {
+    raiseAssertError(
+      message ??
+        `Expected one of following values: ${Object.keys(record).join(', ')}`,
+    )
   }
 }
