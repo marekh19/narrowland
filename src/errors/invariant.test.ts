@@ -17,12 +17,11 @@ describe('invariant', () => {
       -Infinity,
     ] as const
 
-    test.each(truthyValues)(
-      'should not throw for truthy value: %s',
-      (value) => {
-        expect(() => invariant(value)).not.toThrow()
-      },
-    )
+    test.each(
+      truthyValues,
+    )('should not throw for truthy value: %s', (value) => {
+      expect(() => invariant(value)).not.toThrow()
+    })
   })
 
   describe('falsy values', () => {

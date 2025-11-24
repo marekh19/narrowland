@@ -35,8 +35,8 @@
   "scripts": {
     "prepare": "husky",
     "build": "rslib build",
-    "lint:fix": "biome check --write",
-    "lint:check": "biome check",
+    "lint:fix": "biome lint --write",
+    "lint:check": "biome lint",
     "dev": "rslib build --watch",
     "format:fix": "biome format --write",
     "format:check": "biome format",
