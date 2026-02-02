@@ -51,13 +51,13 @@
     "changeset:publish": "changeset publish"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.3.12",
+    "@biomejs/biome": "2.3.13",
     "@changesets/cli": "^2.29.8",
-    "@commitlint/cli": "^20.3.1",
-    "@commitlint/config-conventional": "^20.3.1",
-    "@rslib/core": "^0.19.3",
+    "@commitlint/cli": "^20.4.0",
+    "@commitlint/config-conventional": "^20.4.0",
+    "@rslib/core": "^0.19.4",
     "@size-limit/preset-small-lib": "^11.2.0",
-    "@types/node": "^25.0.10",
+    "@types/node": "^25.1.0",
     "@vitest/coverage-v8": "^3.2.4",
     "husky": "^9.1.7",
     "knip": "^5.82.1",
