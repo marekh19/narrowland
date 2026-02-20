@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'vitest'
+import { describe, expect, expectTypeOf, test } from 'vitest'
 
 import { raiseAssertError, raiseEnsureError, raiseError } from './raise'
 
@@ -38,8 +38,9 @@ describe('raise', () => {
     test('should have never return type', () => {
       const fn = () => {
         raiseError('This never returns')
-        return 'unreachable'
       }
+
+      expectTypeOf(fn).toEqualTypeOf<() => never>()
 
       expect(() => fn()).toThrow('This never returns')
     })

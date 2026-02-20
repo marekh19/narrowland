@@ -66,7 +66,7 @@ describe('invariant', () => {
     test('should narrow string | null to string', () => {
       const value: string | null = 'hello'
 
-      invariant(value !== null)
+      invariant(value)
 
       expectTypeOf(value).toEqualTypeOf<string>()
       expect(value.length).toBe(5)
