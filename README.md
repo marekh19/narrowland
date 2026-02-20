@@ -5,7 +5,7 @@
 [![Bundle size](https://img.shields.io/bundlephobia/minzip/narrowland)](https://bundlephobia.com/package/narrowland)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-A lightweight TypeScript library providing type guards, type assertions, and invariant utilities for runtime type narrowing.
+A lightweight TypeScript library providing type guards, type assertions, ensure functions, and invariant utilities for runtime type narrowing.
 
 ## 🚀 30-Second Pitch
 
@@ -13,7 +13,8 @@ A lightweight TypeScript library providing type guards, type assertions, and inv
 
 - **Type Guards** (`is.*`) - Check types without throwing errors, perfect for conditional logic
 - **Type Assertions** (`assert.*`) - Throw errors for invalid types with full TypeScript inference
-- **Invariant Utilities** (`ensure`, `invariant`, `raiseError`) - Handle edge cases and invariants gracefully
+- **Ensure Functions** (`ensureXxx`) - Validate and return the narrowed value in one step, throwing `EnsureError` on failure
+- **Invariant Utilities** (`invariant`, `raiseError`) - Handle edge cases and invariants gracefully
 
 All functions are **tree-shakeable**, **zero-dependency**, and **fully typed** with TypeScript's type narrowing. You can import individual functions or use the grouped APIs.
 
@@ -30,11 +31,10 @@ yarn add narrowland
 ## 🎯 Quick Start
 
 ```typescript
-// Import individual functions (tree-shakeable)
-import { isString, assertNumber, ensure, invariant } from 'narrowland'
+import { isString, assertNumber, ensureString, ensureDefined, invariant } from 'narrowland'
 
 // Or import grouped APIs
-import { is, assert, ensure, invariant } from 'narrowland'
+import { is, assert } from 'narrowland'
 
 // Type guards - return boolean, don't throw
 if (isString(userInput)) {
@@ -48,20 +48,19 @@ if (is.string(userInput)) {
   console.log(userInput.toUpperCase())
 }
 
-// Assertions - throw on invalid types
+// Assertions - throw on invalid types, narrow in same scope
 assertNumber(age) // throws if not a number
 // age is now typed as number
 
-// Assertions from grouped import
-assert.number(age) // throws if not a number
-// age is now typed as number
+// Ensure - validate and return the narrowed value in one step
+const name = ensureString(rawName) // throws EnsureError if not a string
+// name is typed as string
 
-// Ensure - return value or throw (only for null/undefined)
-const name = ensure(user.name, 'Name is required')
-// name is typed as NonNullable<typeof user.name>
+const config = ensureDefined(maybeConfig, 'Config is required')
+// config is typed as NonNullable<typeof maybeConfig>
 
 // Invariant - check conditions (throws on falsy, does nothing on truthy)
-invariant(isString(items), 'Items must be a string')
+invariant(user.age >= 18, 'User must be an adult')
 ```
 
 ## 📚 API Reference
@@ -120,11 +119,37 @@ Assertions throw errors for invalid types and narrow types in the same scope. **
 | `assert.keyOf(value, record, message?)` | `asserts value is T & keyof U` | Throws if value is not a key of the provided record |
 | `assert.fromPredicate(predicate, message?)` | `(value, message?) => asserts value is T` | Creates custom assertion from predicate |
 
+### Ensure Functions (`ensureXxx`)
+
+Ensure functions validate a value and **return the narrowed value** directly, throwing `EnsureError` on failure. They combine the check and return into a single expression — ideal for inline assignments and pipelines.
+
+> **Note:** A grouped `ensure.*` API (like `is.*` and `assert.*`) is planned for v2.0.0. It is not available yet because the `ensure` export is currently used by the deprecated `ensure()` function. Use the standalone `ensureXxx` imports for now — they will continue to work in v2.
+
+| Function | Return Type | Description |
+|----------|-------------|-------------|
+| `ensureDefined(value, message?)` | `NonNullable<T>` | Returns value or throws if null/undefined |
+| `ensureNotNull(value, message?)` | `Exclude<T, null>` | Returns value or throws if null |
+| `ensureTruthy(value, message?)` | `Exclude<T, false \| 0 \| '' \| null \| undefined>` | Returns value or throws if falsy |
+| `ensureString(value, message?)` | `string` | Returns value or throws if not a string |
+| `ensureNonEmptyString(value, message?)` | `string` | Returns value or throws if not a non-empty string |
+| `ensureNumber(value, message?)` | `number` | Returns value or throws if not a finite number |
+| `ensureBoolean(value, message?)` | `boolean` | Returns value or throws if not a boolean |
+| `ensureBigint(value, message?)` | `bigint` | Returns value or throws if not a bigint |
+| `ensureSymbol(value, message?)` | `symbol` | Returns value or throws if not a symbol |
+| `ensureInstanceOf(value, constructor, message?)` | `T` | Returns value or throws if not an instance of the given constructor |
+| `ensureArray(value, message?)` | `T[]` | Returns value or throws if not an array |
+| `ensureNonEmptyArray(value, message?)` | `[T, ...T[]]` | Returns value or throws if not a non-empty array |
+| `ensureArrayOf(value, guard, message?)` | `T[]` | Returns value or throws if not an array whose items satisfy the provided guard |
+| `ensureOneOf(value, collection, message?)` | `T[number]` | Returns value or throws if not a member of the provided collection |
+| `ensureObject(value, message?)` | `T` | Returns value or throws if not a plain object |
+| `ensureKeyOf(value, record, message?)` | `T & keyof U` | Returns value or throws if not a key of the provided record |
+| `ensureFromPredicate(predicate, message?)` | `(value, message?) => T` | Creates custom ensure function from predicate |
+
 ### Invariant Utilities
 
 | Function | Return Type | Description |
 |----------|-------------|-------------|
-| `ensure<T>(value, message?)` | `NonNullable<T>` | Returns value or throws if null/undefined (only checks nullish) |
+| `ensure<T>(value, message?)` ⚠️ | `NonNullable<T>` | Returns value or throws if null/undefined (deprecated: use `ensureDefined` instead, will become a namespace object in v2.0.0) |
 | `invariant(condition, message?)` | `asserts condition` | Throws if condition is falsy (generic condition checker) |
 | `raiseError(message, options?)` | `never` | Throws error with custom name/code/cause (most flexible) |
 
@@ -138,18 +163,18 @@ Narrowland provides a palette of solutions from most generic to very specific:
 - **Best for**: Conditional logic, filtering, optional validation
 - **Example**: `if (isString(value)) { /* value is string */ }`
 
-### **Type Assertions (`assert.*`)** - Most Direct
+### **Type Assertions (`assert.*`)** - Narrow in Place
 
-- **Use when**: You expect the value to be valid and want to fail fast
-- **Best for**: Input validation, API boundaries, when you're confident about the type
-- **Example**: `assertString(userInput)` - throws immediately if not string
+- **Use when**: You expect the value to be valid and want to fail fast with narrowing in the same scope
+- **Best for**: Input validation at the top of functions, API boundaries
+- **Example**: `assertString(userInput)` - throws immediately if not string, narrows type below
 
-### **Ensure** - Specific Null/Undefined Check
+### **Ensure Functions (`ensureXxx`)** - Validate and Return
 
-- **Use when**: You have a maybe value and know it should be defined
-- **Best for**: Optional chaining results, API responses, configuration values
-- **Throws**: If value is null or undefined (similar to invariant, but only for nullish values)
-- **Example**: `const name = ensure(user.name)` - only checks for null/undefined
+- **Use when**: You need the narrowed value as a return or assignment in one expression
+- **Best for**: Inline assignments, function arguments, pipelines, destructuring
+- **Throws**: `EnsureError` if validation fails
+- **Example**: `const name = ensureString(rawInput)` - validates and returns the string
 
 ### **Invariant** - Generic Condition Checker
 
@@ -195,17 +220,35 @@ function processInput(input: unknown) {
 }
 ```
 
-### Ensure - Handle Null/Undefined
+### Ensure - Validate and Return
 
 ```typescript
-import { ensure } from 'narrowland'
+import { ensureString, ensureNumber, ensureDefined } from 'narrowland'
 
+// Validate and assign in one step
+const name = ensureString(rawInput) // throws EnsureError if not a string
+const age = ensureNumber(rawAge) // throws EnsureError if not a finite number
+
+// Handle null/undefined values
 function getUserName(user: { name?: string | null }) {
-  // ensure throws if null/undefined, returns value otherwise
-  const name = ensure(user.name, 'Name is required')
+  const name = ensureDefined(user.name, 'Name is required')
   // name is now string (was string | null | undefined)
   return name
 }
+
+// Use inline as function arguments
+processUser(ensureString(data.name), ensureNumber(data.age))
+```
+
+### Ensure - Custom Validators
+
+```typescript
+import { ensureFromPredicate, isString } from 'narrowland'
+
+// Create a reusable ensure function from any type guard
+const ensureMyString = ensureFromPredicate(isString, 'Must be a string')
+
+const value = ensureMyString(input) // returns string or throws EnsureError
 ```
 
 ### Invariant - Business Rules
@@ -277,7 +320,7 @@ if (isArrayOf(maybeStringArray, isString)) {
 ### OneOf - Union Type Narrowing
 
 ```typescript
-import { isOneOf, assertOneOf } from 'narrowland'
+import { isOneOf, assertOneOf, ensureOneOf } from 'narrowland'
 
 // Works with any type, not just strings
 const status = 'pending' as unknown
@@ -293,19 +336,15 @@ if (isOneOf(status, validStatuses)) {
 assertOneOf(status, validStatuses)
 // status is now typed as 'pending' | 'completed' | 'failed'
 
-// Works with mixed types too
-const value = 42 as unknown
-const allowedValues = [42, 'hello', true, null] as const
-
-if (isOneOf(value, allowedValues)) {
-  // value is now typed as 42 | 'hello' | true | null
-}
+// Ensure - validate and return in one step
+const validStatus = ensureOneOf(status, validStatuses)
+// validStatus is typed as 'pending' | 'completed' | 'failed'
 ```
 
 ### KeyOf - Safe Object Key Access
 
 ```typescript
-import { isKeyOf, assertKeyOf } from 'narrowland'
+import { isKeyOf, assertKeyOf, ensureKeyOf } from 'narrowland'
 
 const handlers = {
   click: () => 'clicked',
@@ -323,11 +362,15 @@ if (isKeyOf(eventName, handlers)) {
 assertKeyOf(eventName, handlers)
 // eventName is now typed as 'click' | 'submit'
 handlers[eventName]() // Safe to call
+
+// Ensure - validate and return in one step
+const key = ensureKeyOf(eventName, handlers)
+handlers[key]() // Safe to call
 ```
 
 ## 📊 Bundle Size
 
-- **Size**: 902 B (minified + brotli)
+- **Size**: 1.08kB (minified + brotli)
 - **Dependencies**: 0
 - **Tree-shakeable**: ✅ (import individual functions)
 - **ESM + CJS**: ✅
