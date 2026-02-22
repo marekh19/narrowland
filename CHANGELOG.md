@@ -1,5 +1,18 @@
 # narrowland
 
+## 1.5.0
+
+### Minor Changes
+
+- 14a1af1: - Implement `ensure` family to extend `is` and `assert` branches of the library with directly returning the narrowed value
+  - Mark `ensure()` as deprecated, replaced with `ensureDefined()` or `ensure.defined()`. Will be removed in v2.0.0
+
+### Patch Changes
+
+- 14a1af1: Fix `assert` namespace typing by adding explicit `AssertNamespace` interface (required by TypeScript for assertion functions) and add namespace integration tests for `is`, `assert`, and `ensure`
+- 14a1af1: Minor test fixes - mainly type tests strictness
+- 14a1af1: Deprecate `isFalsy` and `assertFalsy` - no valid use case, type narrowing does not work properly. Can be replaced by negating `isTruthy` or `assertTruthy` respectively
+
 ## 1.4.0
 
 ### Minor Changes
