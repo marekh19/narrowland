@@ -76,7 +76,7 @@ Type guards return `boolean` and narrow types without throwing errors. **Safer t
 | `is.defined(value)` | `value is NonNullable<T>` | Checks if value is not null or undefined |
 | `is.notNull(value)` | `value is Exclude<T, null>` | Checks if value is not null |
 | `is.truthy(value)` | `value is Exclude<T, false \| 0 \| '' \| null \| undefined>` | Checks if value is truthy |
-| `is.falsy(value)` | `value is Extract<T, false \| 0 \| '' \| null \| undefined>` | Checks if value is falsy |
+| `is.falsy(value)` ⚠️ | `value is Extract<T, false \| 0 \| '' \| null \| undefined>` | Checks if value is falsy (deprecated: type narrowing is incorrect for most types, will be removed in v2.0.0) |
 | `is.string(value)` | `value is string` | Checks if value is a string |
 | `is.nonEmptyString(value)` | `value is string` | Checks if value is a non-empty string |
 | `is.number(value)` | `value is number` | Checks if value is a finite number |
@@ -102,7 +102,7 @@ Assertions throw errors for invalid types and narrow types in the same scope. **
 | `assert.defined(value, message?)` | `asserts value is NonNullable<T>` | Throws if value is null or undefined |
 | `assert.notNull(value, message?)` | `asserts value is Exclude<T, null>` | Throws if value is null |
 | `assert.truthy(value, message?)` | `asserts value is Exclude<T, false \| 0 \| '' \| null \| undefined>` | Throws if value is falsy |
-| `assert.falsy(value, message?)` | `asserts value is Extract<T, false \| 0 \| '' \| null \| undefined>` | Throws if value is truthy |
+| `assert.falsy(value, message?)` ⚠️ | `asserts value is Extract<T, false \| 0 \| '' \| null \| undefined>` | Throws if value is truthy (deprecated: type narrowing is incorrect for most types, will be removed in v2.0.0) |
 | `assert.string(value, message?)` | `asserts value is string` | Throws if value is not a string |
 | `assert.nonEmptyString(value, message?)` | `asserts value is string` | Throws if value is not a non-empty string |
 | `assert.number(value, message?)` | `asserts value is number` | Throws if value is not a finite number |
@@ -357,7 +357,7 @@ if (is.keyOf(eventName, handlers)) {
 }
 
 // Assertion - throws if invalid
-assert.keyof(eventName, handlers)
+assert.keyOf(eventName, handlers)
 // eventName is now typed as 'click' | 'submit'
 handlers[eventName]() // Safe to call
 
