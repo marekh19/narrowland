@@ -20,7 +20,9 @@ export {
   assertSymbol,
   assertTruthy,
 } from './assert'
+
 export {
+  ensure,
   ensureArray,
   ensureArrayOf,
   ensureBigint,
@@ -39,7 +41,9 @@ export {
   ensureSymbol,
   ensureTruthy,
 } from './ensure'
-export { ensure, invariant, type RaiseOptions, raiseError } from './errors'
+
+export { invariant, type RaiseOptions, raiseError } from './errors'
+
 export {
   is,
   isArray,
