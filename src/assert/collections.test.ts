@@ -64,6 +64,7 @@ describe('assert/collections', () => {
     test('should narrow type correctly in conditional', () => {
       const processValue = (value: unknown): number => {
         assertArray(value)
+        expectTypeOf(value).toEqualTypeOf<unknown[]>()
         return value.length // TypeScript knows this is an array
       }
 
@@ -96,7 +97,9 @@ describe('assert/collections', () => {
 
     test('should validate strings', () => {
       expect(() => assertArrayOf(['a', 'b', 'c'], isString)).not.toThrow()
-      expect(() => assertArrayOf(['a', 1 as unknown], isString)).toThrow()
+      expect(() =>
+        assertArrayOf(['a', 1 as unknown, {} as string], isString),
+      ).toThrow()
     })
 
     test('should validate non-empty strings', () => {
@@ -178,10 +181,14 @@ describe('assert/collections', () => {
 
     test('should narrow type for string arrays', () => {
       const value: unknown = ['x', 'y']
+      const isOneOfXY = (v: unknown) => isOneOf(v, ['x', 'y'])
 
       assertArrayOf(value, isString)
-
       expectTypeOf(value).toEqualTypeOf<string[]>()
+
+      assertArrayOf(value, isOneOfXY)
+      expectTypeOf(value).toEqualTypeOf<('x' | 'y')[]>()
+
       expect(value[0].toUpperCase()).toBe('X')
     })
 
@@ -282,7 +289,8 @@ describe('assert/collections', () => {
     test('should narrow type correctly in conditional', () => {
       const processValue = (value: unknown): number => {
         assertNonEmptyArray(value)
-        return value.length // TypeScript knows this is a non-empty array
+        expectTypeOf(value).toEqualTypeOf<[unknown, ...unknown[]]>()
+        return value.length
       }
 
       expect(processValue([1, 2, 3])).toBe(3)
@@ -545,12 +553,20 @@ describe('assert/collections', () => {
 
       // This will throw, but TypeScript should narrow to never if it didn't
       expect(() => assertOneOf(value, collection)).toThrow()
+
+      try {
+        assertOneOf(value, collection)
+        expectTypeOf(value).toEqualTypeOf<never>()
+      } catch {
+        // noop
+      }
     })
 
     test('should narrow type correctly in conditional', () => {
       const processValue = (value: unknown): string => {
         assertOneOf(value, ['a', 'b', 'c'] as const)
-        return value.toUpperCase() // TypeScript knows this is 'a' | 'b' | 'c'
+        expectTypeOf(value).toEqualTypeOf<'a' | 'b' | 'c'>()
+        return value.toUpperCase()
       }
 
       expect(processValue('a')).toBe('A')
@@ -913,6 +929,7 @@ describe('assert/collections', () => {
         const processKey = (key: string): number => {
           assertKeyOf(key, record)
           // TypeScript knows key is 'foo' | 'bar' after assertion
+          expectTypeOf(key).toEqualTypeOf<'foo' | 'bar'>()
           return record[key]
         }
 

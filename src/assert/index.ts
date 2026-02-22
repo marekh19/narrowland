@@ -14,6 +14,7 @@ import {
   assertTruthy,
 } from './existence'
 import { assertFromPredicate } from './fromPredicate'
+import type { AssertNamespace } from './namespace'
 import {
   assertBigint,
   assertBoolean,
@@ -24,7 +25,7 @@ import {
   assertSymbol,
 } from './primitives'
 
-export const assert = {
+export const assert: AssertNamespace = {
   array: assertArray,
   nonEmptyArray: assertNonEmptyArray,
   arrayOf: assertArrayOf,
@@ -43,6 +44,11 @@ export const assert = {
   number: assertNumber,
   string: assertString,
   fromPredicate: assertFromPredicate,
+  keyOf: assertKeyOf,
+  // FIXME: remove below with v2.0.0 - wrong name, keep for now for backwards compatibility
+  /**
+   * @deprecated Use `assert.keyOf` instead. Will be removed in v2.0.0.
+   */
   keyof: assertKeyOf,
 }
 

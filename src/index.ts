@@ -20,7 +20,30 @@ export {
   assertSymbol,
   assertTruthy,
 } from './assert'
-export { ensure, invariant, type RaiseOptions, raiseError } from './errors'
+
+export {
+  ensure,
+  ensureArray,
+  ensureArrayOf,
+  ensureBigint,
+  ensureBoolean,
+  ensureDefined,
+  ensureFromPredicate,
+  ensureInstanceOf,
+  ensureKeyOf,
+  ensureNonEmptyArray,
+  ensureNonEmptyString,
+  ensureNotNull,
+  ensureNumber,
+  ensureObject,
+  ensureOneOf,
+  ensureString,
+  ensureSymbol,
+  ensureTruthy,
+} from './ensure'
+
+export { invariant, type RaiseOptions, raiseError } from './errors'
+
 export {
   is,
   isArray,

@@ -9,6 +9,7 @@ import {
   isStringLiteral,
 } from './collections'
 import { isDefined, isFalsy, isNotNull, isTruthy } from './existence'
+import type { IsNamespace } from './namespace'
 import {
   isBigint,
   isBoolean,
@@ -19,7 +20,7 @@ import {
   isSymbol,
 } from './primitives'
 
-export const is = {
+export const is: IsNamespace = {
   defined: isDefined,
   notNull: isNotNull,
   truthy: isTruthy,
@@ -36,13 +37,16 @@ export const is = {
   arrayOf: isArrayOf,
   stringLiteral: isStringLiteral,
   // FIXME: remove below with v2.0.0 - wrong name, keep for now for backwards compatibility
+  /**
+   * @deprecated Use `is.stringLiteral` instead. Will be removed in v2.0.0.
+   */
   isStringLiteral: isStringLiteral,
   oneOf: isOneOf,
   object: isObject,
   instanceof: isInstanceOf,
   propertyOf: isPropertyOf,
   keyOf: isKeyOf,
-} as const
+}
 
 export {
   isArray,
