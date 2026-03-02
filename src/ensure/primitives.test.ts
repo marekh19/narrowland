@@ -2,6 +2,7 @@ import { describe, expect, expectTypeOf, test } from 'vitest'
 import {
   ensureBigint,
   ensureBoolean,
+  ensureFunction,
   ensureInstanceOf,
   ensureNonEmptyString,
   ensureNumber,
@@ -264,6 +265,37 @@ describe('ensure/primitives', () => {
 
       expectTypeOf(result).toEqualTypeOf<symbol>()
       expect(result.toString()).toContain('Symbol')
+    })
+  })
+
+  describe('ensureFunction', () => {
+    test('should return the value for functions', () => {
+      const fn = () => 42
+      expect(ensureFunction(fn)).toBe(fn)
+      expect(ensureFunction(Math.max)).toBe(Math.max)
+      expect(ensureFunction(function named() {})).toBeTypeOf('function')
+    })
+
+    test('should throw for non-functions', () => {
+      expect(() => ensureFunction(42)).toThrow('Expected a function')
+      expect(() => ensureFunction('fn')).toThrow('Expected a function')
+      expect(() => ensureFunction(null)).toThrow('Expected a function')
+      expect(() => ensureFunction(undefined)).toThrow('Expected a function')
+      expect(() => ensureFunction({})).toThrow('Expected a function')
+    })
+
+    test('should throw with custom message', () => {
+      expect(() => ensureFunction(42, 'Value must be a function')).toThrow(
+        'Value must be a function',
+      )
+    })
+
+    test('should narrow type correctly', () => {
+      const value: unknown = () => 'hello'
+      const result = ensureFunction(value)
+
+      expectTypeOf(result).toEqualTypeOf<(...args: unknown[]) => unknown>()
+      expect(result()).toBe('hello')
     })
   })
 

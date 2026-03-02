@@ -41,6 +41,15 @@ export function isSymbol(value: unknown): value is symbol {
 }
 
 /**
+ * Type guard that narrows a value to function
+ */
+export function isFunction(
+  value: unknown,
+): value is (...args: unknown[]) => unknown {
+  return typeof value === 'function'
+}
+
+/**
  * Type guard that narrows a value to an instance of the given constructor
  */
 export function isInstanceOf<T>(

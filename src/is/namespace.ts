@@ -19,6 +19,7 @@ export interface IsNamespace {
   boolean: (value: unknown) => value is boolean
   bigint: (value: unknown) => value is bigint
   symbol: (value: unknown) => value is symbol
+  function: (value: unknown) => value is (...args: unknown[]) => unknown
   instanceOf: <T>(
     value: unknown,
     // biome-ignore lint/suspicious/noExplicitAny: We want any here to allow usage for any Class constructor including the built-in like ErrorConstructor
