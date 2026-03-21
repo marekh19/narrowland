@@ -18,6 +18,7 @@ import type { AssertNamespace } from './namespace'
 import {
   assertBigint,
   assertBoolean,
+  assertFunction,
   assertInstanceOf,
   assertNonEmptyString,
   assertNumber,
@@ -37,6 +38,7 @@ export const assert: AssertNamespace = {
   boolean: assertBoolean,
   bigint: assertBigint,
   symbol: assertSymbol,
+  function: assertFunction,
   instanceOf: assertInstanceOf,
   nonEmptyString: assertNonEmptyString,
   stringLiteral: assertStringLiteral,
@@ -63,6 +65,7 @@ export {
   assertTruthy,
   assertBigint,
   assertBoolean,
+  assertFunction,
   assertSymbol,
   assertInstanceOf,
   assertNonEmptyString,

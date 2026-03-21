@@ -27,6 +27,10 @@ export interface EnsureNamespace {
   boolean: (value: unknown, message?: string) => boolean
   bigint: (value: unknown, message?: string) => bigint
   symbol: (value: unknown, message?: string) => symbol
+  function: (
+    value: unknown,
+    message?: string,
+  ) => (...args: unknown[]) => unknown
   instanceOf: <T>(
     value: unknown,
     // biome-ignore lint/suspicious/noExplicitAny: We want any here to allow usage for any Class constructor including the built-in like ErrorConstructor

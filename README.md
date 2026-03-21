@@ -83,6 +83,7 @@ Type guards return `boolean` and narrow types without throwing errors. **Safer t
 | `is.boolean(value)` | `value is boolean` | Checks if value is a boolean |
 | `is.bigint(value)` | `value is bigint` | Checks if value is a bigint |
 | `is.symbol(value)` | `value is symbol` | Checks if value is a symbol |
+| `is.function(value)` | `value is (...args: unknown[]) => unknown` | Checks if value is a function (includes async functions and classes) |
 | `is.instanceOf(value, constructor)` | `value is T` | Checks if value is an instance of the given constructor |
 | `is.array(value)` | `value is T[]` | Checks if value is an array |
 | `is.nonEmptyArray(value)` | `value is [T, ...T[]]` | Checks if value is a non-empty array |
@@ -109,6 +110,7 @@ Assertions throw errors for invalid types and narrow types in the same scope. **
 | `assert.boolean(value, message?)` | `asserts value is boolean` | Throws if value is not a boolean |
 | `assert.bigint(value, message?)` | `asserts value is bigint` | Throws if value is not a bigint |
 | `assert.symbol(value, message?)` | `asserts value is symbol` | Throws if value is not a symbol |
+| `assert.function(value, message?)` | `asserts value is (...args: unknown[]) => unknown` | Throws if value is not a function (includes async functions and classes) |
 | `assert.instanceOf(value, constructor, message?)` | `asserts value is T` | Throws if value is not an instance of the given constructor |
 | `assert.array(value, message?)` | `asserts value is T[]` | Throws if value is not an array |
 | `assert.nonEmptyArray(value, message?)` | `asserts value is [T, ...T[]]` | Throws if value is not a non-empty array |
@@ -134,6 +136,7 @@ Ensure functions validate a value and **return the narrowed value** directly, th
 | `ensure.boolean(value, message?)` | `boolean` | Returns value or throws if not a boolean |
 | `ensure.bigint(value, message?)` | `bigint` | Returns value or throws if not a bigint |
 | `ensure.symbol(value, message?)` | `symbol` | Returns value or throws if not a symbol |
+| `ensure.function(value, message?)` | `(...args: unknown[]) => unknown` | Returns value or throws if not a function (includes async functions and classes) |
 | `ensure.instanceOf(value, constructor, message?)` | `T` | Returns value or throws if not an instance of the given constructor |
 | `ensure.array(value, message?)` | `T[]` | Returns value or throws if not an array |
 | `ensure.nonEmptyArray(value, message?)` | `[T, ...T[]]` | Returns value or throws if not a non-empty array |

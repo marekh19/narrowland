@@ -13,6 +13,7 @@ import type { EnsureNamespace } from './namespace'
 import {
   ensureBigint,
   ensureBoolean,
+  ensureFunction,
   ensureInstanceOf,
   ensureNonEmptyString,
   ensureNumber,
@@ -34,6 +35,7 @@ export const ensure: EnsureNamespace = Object.assign(deprecatedEnsure, {
   boolean: ensureBoolean,
   bigint: ensureBigint,
   symbol: ensureSymbol,
+  function: ensureFunction,
   instanceOf: ensureInstanceOf,
   defined: ensureDefined,
   notNull: ensureNotNull,
@@ -60,6 +62,7 @@ export { ensureFromPredicate } from './fromPredicate'
 export {
   ensureBigint,
   ensureBoolean,
+  ensureFunction,
   ensureInstanceOf,
   ensureNonEmptyString,
   ensureNumber,

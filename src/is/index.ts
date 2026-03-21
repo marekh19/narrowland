@@ -13,6 +13,7 @@ import type { IsNamespace } from './namespace'
 import {
   isBigint,
   isBoolean,
+  isFunction,
   isInstanceOf,
   isNonEmptyString,
   isNumber,
@@ -31,6 +32,7 @@ export const is: IsNamespace = {
   boolean: isBoolean,
   bigint: isBigint,
   symbol: isSymbol,
+  function: isFunction,
   instanceOf: isInstanceOf,
   array: isArray,
   nonEmptyArray: isNonEmptyArray,
@@ -59,6 +61,7 @@ export {
   isTruthy,
   isBigint,
   isBoolean,
+  isFunction,
   isSymbol,
   isInstanceOf,
   isNonEmptyString,

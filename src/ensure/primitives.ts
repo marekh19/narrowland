@@ -69,6 +69,17 @@ export function ensureSymbol(
 }
 
 /**
+ * Ensures a value is a function and returns it
+ */
+export function ensureFunction(
+  value: unknown,
+  message = 'Expected a function',
+): (...args: unknown[]) => unknown {
+  if (typeof value !== 'function') raiseEnsureError(message)
+  return value as (...args: unknown[]) => unknown
+}
+
+/**
  * Ensures a value is an instance of the given constructor and returns it
  */
 export function ensureInstanceOf<T>(

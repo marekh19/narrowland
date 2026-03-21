@@ -3,6 +3,7 @@ import { describe, expect, expectTypeOf, test } from 'vitest'
 import {
   isBigint,
   isBoolean,
+  isFunction,
   isInstanceOf,
   isNonEmptyString,
   isNumber,
@@ -160,6 +161,34 @@ describe('is/primitives', () => {
       if (isSymbol(value)) {
         expectTypeOf(value).toEqualTypeOf<symbol>()
         expect(value.toString()).toContain('Symbol')
+      }
+    })
+  })
+
+  describe('isFunction', () => {
+    test('should return true for functions', () => {
+      expect(isFunction(() => {})).toBe(true)
+      expect(isFunction(async () => {})).toBe(true)
+      expect(isFunction(Math.max)).toBe(true)
+      expect(isFunction(class Foo {})).toBe(true)
+    })
+
+    test('should return false for non-functions', () => {
+      expect(isFunction('function')).toBe(false)
+      expect(isFunction(42)).toBe(false)
+      expect(isFunction(true)).toBe(false)
+      expect(isFunction(null)).toBe(false)
+      expect(isFunction(undefined)).toBe(false)
+      expect(isFunction({})).toBe(false)
+      expect(isFunction([])).toBe(false)
+    })
+
+    test('should narrow type correctly', () => {
+      const value: unknown = () => 42
+
+      if (isFunction(value)) {
+        expectTypeOf(value).toEqualTypeOf<(...args: unknown[]) => unknown>()
+        expect(value()).toBe(42)
       }
     })
   })
