@@ -1,5 +1,12 @@
 # narrowland
 
+## 1.6.0
+
+### Minor Changes
+
+- 1575baf: - Add `is.function` type guard, `assert.function` assertion, and `ensure.function` utility
+  - Narrows a value to `(...args: unknown[]) => unknown` using `typeof value === 'function'`
+
 ## 1.5.0
 
 ### Minor Changes
