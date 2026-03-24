@@ -19,6 +19,10 @@ export interface AssertNamespace {
   boolean: (value: unknown, message?: string) => asserts value is boolean
   bigint: (value: unknown, message?: string) => asserts value is bigint
   symbol: (value: unknown, message?: string) => asserts value is symbol
+  function: (
+    value: unknown,
+    message?: string,
+  ) => asserts value is (...args: unknown[]) => unknown
   instanceOf: <T>(
     value: unknown,
     // biome-ignore lint/suspicious/noExplicitAny: We want any here to allow usage for any Class constructor including the built-in like ErrorConstructor

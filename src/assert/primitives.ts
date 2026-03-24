@@ -63,6 +63,16 @@ export function assertSymbol(
 }
 
 /**
+ * Assertion that narrows a value to function
+ */
+export function assertFunction(
+  value: unknown,
+  message = 'Expected a function',
+): asserts value is (...args: unknown[]) => unknown {
+  if (typeof value !== 'function') raiseAssertError(message)
+}
+
+/**
  * Assertion that narrows a value to an instance of the given constructor
  */
 export function assertInstanceOf<T>(

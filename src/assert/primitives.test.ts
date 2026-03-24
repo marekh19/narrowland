@@ -2,6 +2,7 @@ import { describe, expect, expectTypeOf, test } from 'vitest'
 import {
   assertBigint,
   assertBoolean,
+  assertFunction,
   assertInstanceOf,
   assertNonEmptyString,
   assertNumber,
@@ -261,6 +262,50 @@ describe('assert/primitives', () => {
 
       expectTypeOf(value).toEqualTypeOf<symbol>()
       expect(value.toString()).toContain('Symbol')
+    })
+  })
+
+  describe('assertFunction', () => {
+    test('should not throw for functions', () => {
+      expect(() => assertFunction(() => {})).not.toThrow()
+      expect(() => assertFunction(async () => {})).not.toThrow()
+      expect(() => assertFunction(Math.max)).not.toThrow()
+      expect(() => assertFunction(class Foo {})).not.toThrow()
+    })
+
+    test('should throw for non-functions', () => {
+      expect(() => assertFunction('function')).toThrow('Expected a function')
+      expect(() => assertFunction(42)).toThrow('Expected a function')
+      expect(() => assertFunction(true)).toThrow('Expected a function')
+      expect(() => assertFunction(null)).toThrow('Expected a function')
+      expect(() => assertFunction(undefined)).toThrow('Expected a function')
+      expect(() => assertFunction({})).toThrow('Expected a function')
+      expect(() => assertFunction([])).toThrow('Expected a function')
+    })
+
+    test('should throw with custom message', () => {
+      expect(() => assertFunction(123, 'Value must be a function')).toThrow(
+        'Value must be a function',
+      )
+    })
+
+    test('should narrow type correctly', () => {
+      const value: unknown = () => 42
+
+      assertFunction(value)
+
+      expectTypeOf(value).toEqualTypeOf<(...args: unknown[]) => unknown>()
+      expect(value()).toBe(42)
+    })
+
+    test('should narrow type correctly in conditional', () => {
+      const callIfFunction = (value: unknown): number => {
+        assertFunction(value)
+        return (value as () => number)()
+      }
+
+      expect(callIfFunction(() => 42)).toBe(42)
+      expect(() => callIfFunction(123)).toThrow()
     })
   })
 
