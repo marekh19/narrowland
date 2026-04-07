@@ -10,6 +10,7 @@ import {
 import {
   ensureArray,
   ensureArrayOf,
+  ensureEmptyArray,
   ensureKeyOf,
   ensureNonEmptyArray,
   ensureObject,
@@ -75,6 +76,55 @@ describe('ensure/collections', () => {
 
       expect(processValue([1, 2, 3])).toBe(3)
       expect(() => processValue({})).toThrow()
+    })
+  })
+
+  describe('ensureEmptyArray', () => {
+    test('should return the value for empty arrays', () => {
+      const arr: [] = []
+      expect(ensureEmptyArray(arr)).toBe(arr)
+    })
+
+    test('should throw for non-empty arrays', () => {
+      expect(() => ensureEmptyArray([1])).toThrow('Expected an empty array')
+      expect(() => ensureEmptyArray([1, 2, 3])).toThrow(
+        'Expected an empty array',
+      )
+      expect(() => ensureEmptyArray(['hello'])).toThrow(
+        'Expected an empty array',
+      )
+    })
+
+    test('should throw for non-arrays', () => {
+      expect(() => ensureEmptyArray({})).toThrow('Expected an empty array')
+      expect(() => ensureEmptyArray('hello')).toThrow('Expected an empty array')
+      expect(() => ensureEmptyArray(42)).toThrow('Expected an empty array')
+      expect(() => ensureEmptyArray(null)).toThrow('Expected an empty array')
+      expect(() => ensureEmptyArray(undefined)).toThrow(
+        'Expected an empty array',
+      )
+    })
+
+    test('should throw EnsureError', () => {
+      try {
+        ensureEmptyArray([1])
+      } catch (e) {
+        expect((e as Error).name).toBe('EnsureError')
+      }
+    })
+
+    test('should throw with custom message', () => {
+      expect(() => ensureEmptyArray([1], 'Must be empty')).toThrow(
+        'Must be empty',
+      )
+    })
+
+    test('should narrow type correctly', () => {
+      const value: unknown = []
+      const result = ensureEmptyArray(value)
+
+      expectTypeOf(result).toEqualTypeOf<[]>()
+      expect(result.length).toBe(0)
     })
   })
 

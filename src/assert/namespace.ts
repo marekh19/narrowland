@@ -41,6 +41,7 @@ export interface AssertNamespace {
 
   // collections
   array: <T = unknown>(value: unknown, message?: string) => asserts value is T[]
+  emptyArray: (value: unknown, message?: string) => asserts value is []
   nonEmptyArray: <T = unknown>(
     value: unknown,
     message?: string,

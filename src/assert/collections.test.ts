@@ -10,6 +10,7 @@ import {
 import {
   assertArray,
   assertArrayOf,
+  assertEmptyArray,
   assertKeyOf,
   assertNonEmptyArray,
   assertObject,
@@ -70,6 +71,47 @@ describe('assert/collections', () => {
 
       expect(processValue([1, 2, 3])).toBe(3)
       expect(() => processValue({})).toThrow()
+    })
+  })
+
+  describe('assertEmptyArray', () => {
+    test('should not throw for empty arrays', () => {
+      expect(() => assertEmptyArray([])).not.toThrow()
+    })
+
+    test('should throw for non-empty arrays', () => {
+      expect(() => assertEmptyArray([1])).toThrow('Expected an empty array')
+      expect(() => assertEmptyArray([1, 2, 3])).toThrow(
+        'Expected an empty array',
+      )
+      expect(() => assertEmptyArray(['hello'])).toThrow(
+        'Expected an empty array',
+      )
+    })
+
+    test('should throw for non-arrays', () => {
+      expect(() => assertEmptyArray({})).toThrow('Expected an empty array')
+      expect(() => assertEmptyArray('hello')).toThrow('Expected an empty array')
+      expect(() => assertEmptyArray(42)).toThrow('Expected an empty array')
+      expect(() => assertEmptyArray(null)).toThrow('Expected an empty array')
+      expect(() => assertEmptyArray(undefined)).toThrow(
+        'Expected an empty array',
+      )
+    })
+
+    test('should throw with custom message', () => {
+      expect(() => assertEmptyArray([1], 'Must be empty')).toThrow(
+        'Must be empty',
+      )
+    })
+
+    test('should narrow type correctly', () => {
+      const value: unknown = []
+
+      assertEmptyArray(value)
+
+      expectTypeOf(value).toEqualTypeOf<[]>()
+      expect(value.length).toBe(0)
     })
   })
 

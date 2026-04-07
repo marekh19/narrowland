@@ -2,6 +2,7 @@ import { ensure as deprecatedEnsure } from '../errors'
 import {
   ensureArray,
   ensureArrayOf,
+  ensureEmptyArray,
   ensureKeyOf,
   ensureNonEmptyArray,
   ensureObject,
@@ -41,6 +42,7 @@ export const ensure: EnsureNamespace = Object.assign(deprecatedEnsure, {
   notNull: ensureNotNull,
   truthy: ensureTruthy,
   array: ensureArray,
+  emptyArray: ensureEmptyArray,
   nonEmptyArray: ensureNonEmptyArray,
   arrayOf: ensureArrayOf,
   object: ensureObject,
@@ -52,6 +54,7 @@ export const ensure: EnsureNamespace = Object.assign(deprecatedEnsure, {
 export {
   ensureArray,
   ensureArrayOf,
+  ensureEmptyArray,
   ensureKeyOf,
   ensureNonEmptyArray,
   ensureObject,

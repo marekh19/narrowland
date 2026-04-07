@@ -86,6 +86,7 @@ Type guards return `boolean` and narrow types without throwing errors. **Safer t
 | `is.function(value)` | `value is (...args: unknown[]) => unknown` | Checks if value is a function (includes async functions and classes) |
 | `is.instanceOf(value, constructor)` | `value is T` | Checks if value is an instance of the given constructor |
 | `is.array(value)` | `value is T[]` | Checks if value is an array |
+| `is.emptyArray(value)` | `value is []` | Checks if value is an empty array |
 | `is.nonEmptyArray(value)` | `value is [T, ...T[]]` | Checks if value is a non-empty array |
 | `is.arrayOf(value, guard)` | `value is T[]` | Checks if value is an array whose items satisfy the provided guard |
 | `is.stringLiteral(value, literals)` ⚠️ | `value is T[number]` | Checks if value is a member of string literals array (deprecated: use `is.oneOf` instead, will be removed in v2.0.0) |
@@ -113,6 +114,7 @@ Assertions throw errors for invalid types and narrow types in the same scope. **
 | `assert.function(value, message?)` | `asserts value is (...args: unknown[]) => unknown` | Throws if value is not a function (includes async functions and classes) |
 | `assert.instanceOf(value, constructor, message?)` | `asserts value is T` | Throws if value is not an instance of the given constructor |
 | `assert.array(value, message?)` | `asserts value is T[]` | Throws if value is not an array |
+| `assert.emptyArray(value, message?)` | `asserts value is []` | Throws if value is not an empty array |
 | `assert.nonEmptyArray(value, message?)` | `asserts value is [T, ...T[]]` | Throws if value is not a non-empty array |
 | `assert.arrayOf(value, guard, message?)` | `asserts value is T[]` | Throws if value is not an array whose items satisfy the provided guard |
 | `assert.stringLiteral(value, literals, message?)` ⚠️ | `value is T[number]` | Throws if value is not a member of provided string literals array (deprecated: use `assert.oneOf` instead, will be removed in v2.0.0) |
@@ -139,6 +141,7 @@ Ensure functions validate a value and **return the narrowed value** directly, th
 | `ensure.function(value, message?)` | `(...args: unknown[]) => unknown` | Returns value or throws if not a function (includes async functions and classes) |
 | `ensure.instanceOf(value, constructor, message?)` | `T` | Returns value or throws if not an instance of the given constructor |
 | `ensure.array(value, message?)` | `T[]` | Returns value or throws if not an array |
+| `ensure.emptyArray(value, message?)` | `[]` | Returns value or throws if not an empty array |
 | `ensure.nonEmptyArray(value, message?)` | `[T, ...T[]]` | Returns value or throws if not a non-empty array |
 | `ensure.arrayOf(value, guard, message?)` | `T[]` | Returns value or throws if not an array whose items satisfy the provided guard |
 | `ensure.oneOf(value, collection, message?)` | `T[number]` | Returns value or throws if not a member of the provided collection |

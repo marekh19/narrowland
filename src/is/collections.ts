@@ -6,6 +6,13 @@ export function isArray<T = unknown>(value: unknown): value is T[] {
 }
 
 /**
+ * Type guard that narrows a value to empty array
+ */
+export function isEmptyArray(value: unknown): value is [] {
+  return Array.isArray(value) && value.length === 0
+}
+
+/**
  * Type guard that narrows a value to non-empty array
  */
 export function isNonEmptyArray<T = unknown>(

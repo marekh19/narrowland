@@ -37,6 +37,7 @@ export interface IsNamespace {
 
   // collections
   array: <T = unknown>(value: unknown) => value is T[]
+  emptyArray: (value: unknown) => value is []
   nonEmptyArray: <T = unknown>(value: unknown) => value is [T, ...T[]]
   arrayOf: <T>(
     value: unknown,

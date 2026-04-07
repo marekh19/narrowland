@@ -45,6 +45,7 @@ export interface EnsureNamespace {
 
   // collections
   array: <T = unknown>(value: unknown, message?: string) => T[]
+  emptyArray: (value: unknown, message?: string) => []
   nonEmptyArray: <T = unknown>(value: unknown, message?: string) => [T, ...T[]]
   arrayOf: <T>(
     value: unknown,
