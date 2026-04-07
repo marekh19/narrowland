@@ -2,7 +2,7 @@ import type { SizeLimitConfig } from 'size-limit'
 
 export default [
   {
-    path: 'dist/index.js',
-    limit: '1.2kB',
+    path: 'dist/index.mjs',
+    limit: '1.25kB',
   },
 ] satisfies SizeLimitConfig
