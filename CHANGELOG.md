@@ -1,5 +1,23 @@
 # narrowland
 
+## 1.7.0
+
+### Minor Changes
+
+- e504090: Add `isEmptyArray`, `assertEmptyArray`, and `ensureEmptyArray` utilities
+
+### Patch Changes
+
+- fce8947: Upgrades TypeScript to v6.0.
+
+  - Drops support for TypeScript < 6.0 as a peer development dependency.
+  - Removes tsconfig options that are now redundant defaults in TS 6.0 (`useDefineForClassFields`, `allowImportingTsExtensions`).
+
+- 5b6119a: Fixes TypeScript declaration files being incompatible with `moduleResolution: NodeNext`.
+
+  - Previously, rslib emitted per-source-file declarations with extensionless relative imports, causing TypeScript to silently lose all type information in consumer projects using NodeNext resolution.
+  - Migrated build tooling from rslib to tsdown, which bundles both JS and declarations into single output files by default. Also updated package exports to the modern nested `import`/`require` structure with per-condition type declarations (`.d.mts` for ESM, `d.cts` for CJS).
+
 ## 1.6.0
 
 ### Minor Changes
