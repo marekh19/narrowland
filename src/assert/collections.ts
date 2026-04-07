@@ -11,6 +11,16 @@ export function assertArray<T = unknown>(
 }
 
 /**
+ * Assertion that narrows a value to empty array
+ */
+export function assertEmptyArray(
+  value: unknown,
+  message = 'Expected an empty array',
+): asserts value is [] {
+  if (!Array.isArray(value) || value.length !== 0) raiseAssertError(message)
+}
+
+/**
  * Assertion that narrows a value to non-empty array
  */
 export function assertNonEmptyArray<T = unknown>(

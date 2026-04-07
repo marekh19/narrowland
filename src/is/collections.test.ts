@@ -3,6 +3,7 @@ import { describe, expect, expectTypeOf, test } from 'vitest'
 import {
   isArray,
   isArrayOf,
+  isEmptyArray,
   isKeyOf,
   isNonEmptyArray,
   isObject,
@@ -49,6 +50,35 @@ describe('is/collections', () => {
       if (isArray<string>(value)) {
         expectTypeOf(value).toEqualTypeOf<string[]>()
         expect(value[0].toUpperCase()).toBe('HELLO')
+      }
+    })
+  })
+
+  describe('isEmptyArray', () => {
+    test('should return true for empty arrays', () => {
+      expect(isEmptyArray([])).toBe(true)
+    })
+
+    test('should return false for non-empty arrays', () => {
+      expect(isEmptyArray([1])).toBe(false)
+      expect(isEmptyArray([1, 2, 3])).toBe(false)
+      expect(isEmptyArray(['hello'])).toBe(false)
+    })
+
+    test('should return false for non-arrays', () => {
+      expect(isEmptyArray({})).toBe(false)
+      expect(isEmptyArray('hello')).toBe(false)
+      expect(isEmptyArray(42)).toBe(false)
+      expect(isEmptyArray(null)).toBe(false)
+      expect(isEmptyArray(undefined)).toBe(false)
+    })
+
+    test('should narrow type correctly', () => {
+      const value: unknown = []
+
+      if (isEmptyArray(value)) {
+        expectTypeOf(value).toEqualTypeOf<[]>()
+        expect(value.length).toBe(0)
       }
     })
   })

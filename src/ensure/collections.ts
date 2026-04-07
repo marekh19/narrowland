@@ -12,6 +12,17 @@ export function ensureArray<T = unknown>(
 }
 
 /**
+ * Ensures a value is an empty array and returns it
+ */
+export function ensureEmptyArray(
+  value: unknown,
+  message = 'Expected an empty array',
+): [] {
+  if (!Array.isArray(value) || value.length !== 0) raiseEnsureError(message)
+  return value as []
+}
+
+/**
  * Ensures a value is a non-empty array and returns it
  */
 export function ensureNonEmptyArray<T = unknown>(
