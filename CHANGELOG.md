@@ -1,5 +1,11 @@
 # narrowland
 
+## 1.8.0
+
+### Minor Changes
+
+- 6f9f076: Add `assertNever` and `assert.never` for exhaustive union checking
+
 ## 1.7.0
 
 ### Minor Changes
