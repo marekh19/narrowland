@@ -42,3 +42,13 @@ export function assertFalsy<T>(
 ): asserts value is Extract<T, Falsy> {
   if (value) raiseAssertError(message)
 }
+
+/**
+ * Exhaustiveness assertion — call in the default branch of a switch/if-else
+ * over a discriminated union. TypeScript will error at compile time if any
+ * union member is unhandled (because `value` won't narrow to `never`).
+ * Always throws at runtime if somehow reached.
+ */
+export function assertNever(value: never, message?: string): never {
+  raiseAssertError(message ?? `Unexpected value: ${String(value)}`)
+}

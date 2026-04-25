@@ -38,6 +38,7 @@ export interface AssertNamespace {
    * @deprecated Will be removed in v2.0.0.
    */
   falsy: <T>(value: T, message?: string) => asserts value is Extract<T, Falsy>
+  never: (value: never, message?: string) => never
 
   // collections
   array: <T = unknown>(value: unknown, message?: string) => asserts value is T[]

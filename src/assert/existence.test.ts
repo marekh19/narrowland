@@ -3,6 +3,7 @@ import { describe, expect, expectTypeOf, test } from 'vitest'
 import {
   assertDefined,
   assertFalsy,
+  assertNever,
   assertNotNull,
   assertTruthy,
 } from './existence'
@@ -196,6 +197,81 @@ describe('assert/existence', () => {
       expect(processValue(null)).toBe('falsy')
       expect(processValue(undefined)).toBe('falsy')
       expect(() => processValue('hello')).toThrow()
+    })
+  })
+
+  describe('assertNever', () => {
+    test('value in default branch is narrowed to never when all cases are handled', () => {
+      type Shape = { kind: 'circle' } | { kind: 'square' }
+
+      const handle = (shape: Shape): string => {
+        switch (shape.kind) {
+          case 'circle':
+            return 'circle'
+          case 'square':
+            return 'square'
+          default:
+            return assertNever(shape) // compiles without `as never` — shape IS never here
+        }
+      }
+
+      expect(handle({ kind: 'circle' })).toBe('circle')
+      expect(handle({ kind: 'square' })).toBe('square')
+    })
+
+    test('requires value to be never — compile error when a case is missing', () => {
+      type Status = 'active' | 'inactive' | 'pending'
+
+      const handle = (status: Status): string => {
+        switch (status) {
+          case 'active':
+            return 'active'
+          case 'inactive':
+            return 'inactive'
+          // 'pending' not handled, so status is not never in default
+          default:
+            // @ts-expect-error — status is 'pending', not never
+            return assertNever(status)
+        }
+      }
+
+      expect(handle('active')).toBe('active')
+      expect(handle('inactive')).toBe('inactive')
+      expect(() => handle('pending')).toThrow('Unexpected value: pending')
+    })
+
+    test('throws when an unhandled value reaches the default branch at runtime', () => {
+      type Status = 'active' | 'inactive'
+
+      const label = (status: Status): string => {
+        switch (status) {
+          case 'active':
+            return 'Active'
+          case 'inactive':
+            return 'Inactive'
+          default:
+            return assertNever(status)
+        }
+      }
+
+      // Simulates a new union member added at runtime without updating the switch
+      expect(() => label('archived' as Status)).toThrow(
+        'Unexpected value: archived',
+      )
+    })
+
+    test('throws custom message when unhandled value reaches the default branch', () => {
+      type Direction = 'north' | 'south' | 'east' | 'west'
+
+      const describe = (dir: Direction): string => {
+        if (dir === 'north') return 'up'
+        if (dir === 'south') return 'down'
+        if (dir === 'east') return 'right'
+        if (dir === 'west') return 'left'
+        return assertNever(dir, 'Unknown direction')
+      }
+
+      expect(() => describe('up' as Direction)).toThrow('Unknown direction')
     })
   })
 })
