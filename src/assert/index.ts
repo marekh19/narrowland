@@ -11,6 +11,7 @@ import {
 import {
   assertDefined,
   assertFalsy,
+  assertNever,
   assertNotNull,
   assertTruthy,
 } from './existence'
@@ -37,6 +38,7 @@ export const assert: AssertNamespace = {
   truthy: assertTruthy,
   defined: assertDefined,
   notNull: assertNotNull,
+  never: assertNever,
   boolean: assertBoolean,
   bigint: assertBigint,
   symbol: assertSymbol,
@@ -68,6 +70,7 @@ export {
   assertFunction,
   assertInstanceOf,
   assertKeyOf,
+  assertNever,
   assertNonEmptyArray,
   assertNonEmptyString,
   assertNotNull,

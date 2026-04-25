@@ -11,6 +11,7 @@ export {
   assertFunction,
   assertInstanceOf,
   assertKeyOf,
+  assertNever,
   assertNonEmptyArray,
   assertNonEmptyString,
   assertNotNull,

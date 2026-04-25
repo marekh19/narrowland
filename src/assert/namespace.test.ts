@@ -56,6 +56,46 @@ describe('assert namespace', () => {
     })
   })
 
+  describe('assert.never', () => {
+    test('value in default branch is narrowed to never when all cases are handled', () => {
+      type Shape = { kind: 'circle' } | { kind: 'square' }
+
+      const handle = (shape: Shape): string => {
+        switch (shape.kind) {
+          case 'circle':
+            return 'circle'
+          case 'square':
+            return 'square'
+          default:
+            return assert.never(shape) // compiles without `as never` — shape IS never here
+        }
+      }
+
+      expect(handle({ kind: 'circle' })).toBe('circle')
+      expect(handle({ kind: 'square' })).toBe('square')
+    })
+
+    test('throws when an unhandled value reaches the default branch at runtime', () => {
+      type Status = 'active' | 'inactive'
+
+      const label = (status: Status): string => {
+        switch (status) {
+          case 'active':
+            return 'Active'
+          case 'inactive':
+            return 'Inactive'
+          default:
+            return assert.never(status)
+        }
+      }
+
+      // Simulates a new union member added at runtime without updating the switch
+      expect(() => label('archived' as Status)).toThrow(
+        'Unexpected value: archived',
+      )
+    })
+  })
+
   describe('assert.keyOf', () => {
     test('runtime parity with assertKeyOf', () => {
       const record = { foo: 1, bar: 2 } as const

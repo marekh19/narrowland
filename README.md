@@ -122,6 +122,7 @@ Assertions throw errors for invalid types and narrow types in the same scope. **
 | `assert.object(value, message?)` | `asserts value is T` | Throws if value is not a plain object |
 | `assert.keyOf(value, record, message?)` | `asserts value is T & keyof U` | Throws if value is not a key of the provided record |
 | `assert.fromPredicate(predicate, message?)` | `(value, message?) => asserts value is T` | Creates custom assertion from predicate |
+| `assert.never(value, message?)` | `never` | Exhaustiveness check — TypeScript errors at compile time if the union is not fully covered; always throws at runtime |
 
 ### Ensure Functions (`ensure.*`)
 
@@ -268,6 +269,36 @@ function calculateAge(birthYear: number) {
 }
 ```
 
+### AssertNever - Exhaustive Switch Statements
+
+```typescript
+import { assert } from 'narrowland'
+
+type Status = 'pending' | 'active' | 'archived'
+
+function label(status: Status): string {
+  switch (status) {
+    case 'pending':  return 'Pending'
+    case 'active':   return 'Active'
+    case 'archived': return 'Archived'
+    default:
+      // If you later add 'deleted' to Status, TypeScript errors here at compile time
+      return assert.never(status)
+  }
+}
+
+// Also works with if-else chains
+type Direction = 'north' | 'south' | 'east' | 'west'
+
+function describe(dir: Direction): string {
+  if (dir === 'north') return 'Up'
+  if (dir === 'south') return 'Down'
+  if (dir === 'east')  return 'Right'
+  if (dir === 'west')  return 'Left'
+  return assert.never(dir) // compile error if a branch is missing
+}
+```
+
 ### Filtering Arrays
 
 ```typescript
@@ -374,7 +405,7 @@ handlers[key]() // Safe to call
 
 ## 📊 Bundle Size
 
-- **Size**: 1.08kB (minified + brotli)
+- **Size**: 1.23kB (minified + brotli)
 - **Dependencies**: 0
 - **Tree-shakeable**: ✅ (import individual functions)
 - **ESM + CJS**: ✅
@@ -425,7 +456,7 @@ This project is licensed under the MIT License - see the [LICENSE](https://githu
 ## 🙏 Acknowledgments
 
 - Inspired by [tiny-invariant](https://github.com/alexreardon/tiny-invariant) for the invariant pattern
-- Built with modern tooling: Vitest, Biome, RSLib
+- Built with modern tooling: Vitest, Biome, tsdown
 - Zero dependencies for maximum compatibility
 
 ---
