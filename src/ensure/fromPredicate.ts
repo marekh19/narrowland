@@ -11,6 +11,6 @@ export function ensureFromPredicate<T>(
 ) {
   return (value: unknown, message = defaultMessage): T => {
     if (!predicate(value)) raiseEnsureError(message)
-    return value as T
+    return value
   }
 }
