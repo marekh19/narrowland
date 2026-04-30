@@ -1,5 +1,11 @@
 # narrowland
 
+## 1.8.1
+
+### Patch Changes
+
+- 2ed051f: Migrate from Biome to oxlint and oxfmt; enforce `no-explicit-any`, `no-non-null-assertion`, and `no-unnecessary-type-assertion` rules
+
 ## 1.8.0
 
 ### Minor Changes
