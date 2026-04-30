@@ -84,12 +84,12 @@ export function ensureFunction(
  */
 export function ensureInstanceOf<T>(
   value: unknown,
-  // biome-ignore lint/suspicious/noExplicitAny: We want any here to allow usage for any Class constructor including the built-in like ErrorConstructor
+  // oxlint-disable-next-line typescript/no-explicit-any -- required to accept any class constructor, including built-ins like Date and Error
   ctor: new (...args: any[]) => T,
   message?: string,
 ): T {
   if (!(value instanceof ctor)) {
     raiseEnsureError(message ?? `Expected instance of ${ctor.name}`)
   }
-  return value as T
+  return value
 }

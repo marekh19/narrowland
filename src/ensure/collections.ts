@@ -44,7 +44,7 @@ export function ensureArrayOf<T>(
   if (!Array.isArray(value) || !value.every((item) => guardFn(item))) {
     raiseEnsureError(message)
   }
-  return value as T[]
+  return value
 }
 
 /**

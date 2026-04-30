@@ -456,7 +456,7 @@ This project is licensed under the MIT License - see the [LICENSE](https://githu
 ## 🙏 Acknowledgments
 
 - Inspired by [tiny-invariant](https://github.com/alexreardon/tiny-invariant) for the invariant pattern
-- Built with modern tooling: Vitest, Biome, tsdown
+- Built with modern tooling: vitest, oxc, tsdown
 - Zero dependencies for maximum compatibility
 
 ---

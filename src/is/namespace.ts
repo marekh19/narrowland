@@ -22,7 +22,7 @@ export interface IsNamespace {
   function: (value: unknown) => value is (...args: unknown[]) => unknown
   instanceOf: <T>(
     value: unknown,
-    // biome-ignore lint/suspicious/noExplicitAny: We want any here to allow usage for any Class constructor including the built-in like ErrorConstructor
+    // oxlint-disable-next-line typescript/no-explicit-any -- required to accept any class constructor, including built-ins like Date and Error
     ctor: new (...args: any[]) => T,
   ) => value is T
 
@@ -79,7 +79,7 @@ export interface IsNamespace {
    */
   instanceof: <T>(
     value: unknown,
-    // biome-ignore lint/suspicious/noExplicitAny: We want any here to allow usage for any Class constructor including the built-in like ErrorConstructor
+    // oxlint-disable-next-line typescript/no-explicit-any -- required to accept any class constructor, including built-ins like Date and Error
     ctor: new (...args: any[]) => T,
   ) => value is T
 }

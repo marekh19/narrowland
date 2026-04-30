@@ -77,7 +77,7 @@ export function assertFunction(
  */
 export function assertInstanceOf<T>(
   value: unknown,
-  // biome-ignore lint/suspicious/noExplicitAny: We want any here to allow usage for any Class contructor including the built-in like ErrorConstructor
+  // oxlint-disable-next-line typescript/no-explicit-any -- required to accept any class constructor, including built-ins like Date and Error
   ctor: new (...args: any[]) => T,
   message?: string,
 ): asserts value is T {
