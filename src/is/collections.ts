@@ -49,7 +49,7 @@ export function isOneOf<T, const U extends readonly T[]>(
   value: T,
   collection: U,
 ): value is U[number] {
-  return collection.includes(value as U[number])
+  return collection.includes(value)
 }
 
 /**
