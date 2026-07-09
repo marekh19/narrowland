@@ -356,10 +356,16 @@ describe('ensure/collections', () => {
     test('should return the value when in collection (mixed types)', () => {
       type Literal = 'a' | 1 | true | null
       const collection = ['a', 1, true, null] as const
-      expect(ensureOneOf('a' as Literal, collection)).toBe('a')
-      expect(ensureOneOf(1 as Literal, collection)).toBe(1)
-      expect(ensureOneOf(true as Literal, collection)).toBe(true)
-      expect(ensureOneOf(null as Literal, collection)).toBe(null)
+      // Pin `T` to the collection's element union explicitly; inferring it from
+      // a narrow literal value would fail the `U extends readonly T[]` constraint.
+      expect(ensureOneOf<Literal, typeof collection>('a', collection)).toBe('a')
+      expect(ensureOneOf<Literal, typeof collection>(1, collection)).toBe(1)
+      expect(ensureOneOf<Literal, typeof collection>(true, collection)).toBe(
+        true,
+      )
+      expect(ensureOneOf<Literal, typeof collection>(null, collection)).toBe(
+        null,
+      )
     })
 
     test('should return the value when in collection (objects)', () => {

@@ -10,5 +10,5 @@ export function ensure<T>(
   if (value === null || value === undefined) {
     raiseEnsureError(message)
   }
-  return value as NonNullable<T>
+  return value
 }

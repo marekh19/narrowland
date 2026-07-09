@@ -401,10 +401,20 @@ describe('assert/collections', () => {
     test('should not throw when value is in collection (mixed types)', () => {
       type Literal = 'a' | 1 | true | null
       const collection = ['a', 1, true, null] as const
-      expect(() => assertOneOf('a' as Literal, collection)).not.toThrow()
-      expect(() => assertOneOf(1 as Literal, collection)).not.toThrow()
-      expect(() => assertOneOf(true as Literal, collection)).not.toThrow()
-      expect(() => assertOneOf(null as Literal, collection)).not.toThrow()
+      // Pin `T` to the collection's element union explicitly; inferring it from
+      // a narrow literal value would fail the `U extends readonly T[]` constraint.
+      expect(() =>
+        assertOneOf<Literal, typeof collection>('a', collection),
+      ).not.toThrow()
+      expect(() =>
+        assertOneOf<Literal, typeof collection>(1, collection),
+      ).not.toThrow()
+      expect(() =>
+        assertOneOf<Literal, typeof collection>(true, collection),
+      ).not.toThrow()
+      expect(() =>
+        assertOneOf<Literal, typeof collection>(null, collection),
+      ).not.toThrow()
     })
 
     test('should not throw when value is in collection (objects)', () => {
