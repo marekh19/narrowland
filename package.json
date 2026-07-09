@@ -1,6 +1,6 @@
 {
   "name": "narrowland",
-  "version": "1.8.1",
+  "version": "1.8.2",
   "description": "A lightweight TypeScript library providing type-safe assertions, type guards, and error handling utilities.",
   "keywords": [
     "assert",
