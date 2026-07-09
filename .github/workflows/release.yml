@@ -1,0 +1,50 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+
+# Never run two releases at once.
+concurrency: ${{ github.workflow }}-${{ github.ref }}
+
+permissions:
+  contents: write # push version commit + git tags, create GitHub releases
+  pull-requests: write # open/update the "Version Packages" PR
+  id-token: write # OIDC: mint short-lived npm creds via Trusted Publishing (+ provenance)
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v5
+        with:
+          node-version-file: ".nvmrc"
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm i --frozen-lockfile
+
+      # If changesets exist -> opens/updates the "Version Packages" PR.
+      # If none exist but versions are unpublished -> runs publish (build via
+      # prepublishOnly), pushes git tags, creates GitHub releases.
+      - name: Create Release PR or Publish
+        uses: changesets/action@v1
+        with:
+          version: pnpm changeset version
+          publish: pnpm changeset publish
+          commit: "chore(release): version packages"
+          title: "chore(release): version packages"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          HUSKY: 0
+          # No NPM_TOKEN: auth comes from OIDC (Trusted Publishing).
+          # Requires a trusted publisher configured for this repo + workflow
+          # on npmjs.com -> narrowland -> Settings.
