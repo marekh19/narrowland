@@ -60,7 +60,7 @@ export function ensureOneOf<T, const U extends readonly T[]>(
       message ?? `Expected one of following values: ${collection.join(', ')}.`,
     )
   }
-  return value as U[number]
+  return value
 }
 
 /**
@@ -89,5 +89,5 @@ export function ensureKeyOf<
         `Expected one of following values: ${Object.keys(record).join(', ')}`,
     )
   }
-  return value as T & keyof U
+  return value
 }

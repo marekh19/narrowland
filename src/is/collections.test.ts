@@ -241,17 +241,17 @@ describe('is/collections', () => {
 
   describe('isStringLiteral', () => {
     test('should return true when value is in allowed literals', () => {
-      expect(isStringLiteral('a' as 'a' | 'b', ['a', 'b'])).toBe(true)
-      expect(isStringLiteral('b' as 'a' | 'b', ['a', 'b'])).toBe(true)
+      expect(isStringLiteral('a', ['a', 'b'])).toBe(true)
+      expect(isStringLiteral('b', ['a', 'b'])).toBe(true)
     })
 
     test('should return false when value is not in allowed literals', () => {
-      expect(isStringLiteral('c' as 'a' | 'b', ['a', 'b'])).toBe(false)
-      expect(isStringLiteral('ab' as 'a' | 'b', ['a', 'b'])).toBe(false)
+      expect(isStringLiteral('c', ['a', 'b'])).toBe(false)
+      expect(isStringLiteral('ab', ['a', 'b'])).toBe(false)
     })
 
     test('should be case-sensitive', () => {
-      expect(isStringLiteral('Foo' as 'foo', ['foo'])).toBe(false)
+      expect(isStringLiteral('Foo', ['foo'])).toBe(false)
       expect(isStringLiteral('foo', ['foo'])).toBe(true)
     })
 
@@ -300,10 +300,12 @@ describe('is/collections', () => {
       type Literal = 'a' | 1 | true | null
       const collection = ['a', 1, true, null] as const
 
-      expect(isOneOf('a' as Literal, collection)).toBe(true)
-      expect(isOneOf(1 as Literal, collection)).toBe(true)
-      expect(isOneOf(true as Literal, collection)).toBe(true)
-      expect(isOneOf(null as Literal, collection)).toBe(true)
+      // Pin `T` to the collection's element union explicitly; inferring it from
+      // a narrow literal value would fail the `U extends readonly T[]` constraint.
+      expect(isOneOf<Literal, typeof collection>('a', collection)).toBe(true)
+      expect(isOneOf<Literal, typeof collection>(1, collection)).toBe(true)
+      expect(isOneOf<Literal, typeof collection>(true, collection)).toBe(true)
+      expect(isOneOf<Literal, typeof collection>(null, collection)).toBe(true)
     })
 
     test('should return true when value is in collection (objects)', () => {
@@ -587,14 +589,14 @@ describe('is/collections', () => {
 
       test('should return false when property is wrong type (string vs number)', () => {
         const hasAge = isPropertyOf('age', isNumber)
-        expect(hasAge({ age: '25' as unknown })).toBe(false)
+        expect(hasAge({ age: '25' })).toBe(false)
         expect(hasAge({ age: null })).toBe(false)
         expect(hasAge({ age: undefined })).toBe(false)
       })
 
       test('should return false when property is wrong type (number vs string)', () => {
         const hasName = isPropertyOf('name', isString)
-        expect(hasName({ name: 123 as unknown })).toBe(false)
+        expect(hasName({ name: 123 })).toBe(false)
         expect(hasName({ name: null })).toBe(false)
         expect(hasName({ name: undefined })).toBe(false)
       })
@@ -732,7 +734,7 @@ describe('is/collections', () => {
           { price: 29.99, category: 'electronics' },
           { category: 'clothing' },
           {
-            price: 'free' as unknown as number | string | null,
+            price: 'free',
             category: 'promo',
           },
         ]
