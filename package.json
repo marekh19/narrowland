@@ -39,6 +39,7 @@
   },
   "scripts": {
     "prepare": "husky",
+    "prepublishOnly": "pnpm build",
     "build": "tsdown",
     "lint:check": "oxlint",
     "lint:fix": "oxlint --fix",
