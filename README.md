@@ -14,6 +14,7 @@ A lightweight TypeScript library providing type guards, type assertions, ensure 
 - **Type Guards** (`is.*`) - Check types without throwing errors, perfect for conditional logic
 - **Type Assertions** (`assert.*`) - Throw errors for invalid types with full TypeScript inference
 - **Ensure Functions** (`ensure.*`) - Validate and return the narrowed value in one step, throwing `EnsureError` on failure
+- **Branded Types** (`brand`, `createBrand`) - Tag a primitive with a nominal type so structurally-identical values can't be mixed up
 - **Invariant Utilities** (`invariant`, `raiseError`) - Handle edge cases and invariants gracefully
 
 All functions are **tree-shakeable**, **zero-dependency**, and **fully typed** with TypeScript's type narrowing. You can import individual functions or use the grouped APIs.
@@ -150,6 +151,40 @@ Ensure functions validate a value and **return the narrowed value** directly, th
 | `ensure.keyOf(value, record, message?)` | `T & keyof U` | Returns value or throws if not a key of the provided record |
 | `ensure.fromPredicate(predicate, message?)` | `(value, message?) => T` | Creates custom ensure function from predicate |
 
+### Branded Types (`brand`)
+
+Branded (nominal) types tag a base type so two structurally-identical values — say a `UserId` and an `OrderId`, both strings — can't be passed where the other is expected. `brand` casts a trusted value; `createBrand` builds a reusable constructor that validates first and throws `BrandError` on failure. Existing type guards (e.g. `isNonEmptyString`) work as validators.
+
+| Export | Kind | Description |
+|--------|------|-------------|
+| `Brand<T, B>` | type | Base type `T` tagged with the string literal brand `B` (e.g. `Brand<string, 'Email'>`, `Brand<number, 'Cents'>`) |
+| `Unbrand<T>` | type | Recovers the base type of a brand (`Unbrand<Email>` is `string`); passes non-branded types through |
+| `brand<T>(value)` | function | Casts a trusted, already-valid value to its branded type — no runtime check |
+| `createBrand<T>(validate, message?)` | function | Returns `(value, message?) => T` that validates then brands, throwing `BrandError` on failure |
+
+```typescript
+import { type Brand, brand, createBrand, isNonEmptyString } from 'narrowland'
+
+type Email = Brand<string, 'Email'>
+type UserId = Brand<string, 'UserId'>
+
+// Trusted value (e.g. from your own DB) — no validation
+const id = brand<UserId>(row.id)
+
+// Validating constructor — throws BrandError on invalid input
+const toEmail = createBrand<Email>((v) => v.includes('@'))
+const email = toEmail(userInput)
+
+// Reuse an existing guard as the validator
+const toUserId = createBrand<UserId>(isNonEmptyString)
+
+function sendMail(to: Email) {
+  /* ... */
+}
+sendMail(email) // ✅
+sendMail(id) // ❌ type error — UserId is not an Email, even though both are strings
+```
+
 ### Invariant Utilities
 
 | Function | Return Type | Description |
@@ -180,6 +215,13 @@ Narrowland provides a palette of solutions from most generic to very specific:
 - **Best for**: Inline assignments, function arguments, pipelines, destructuring
 - **Throws**: `EnsureError` if validation fails
 - **Example**: `const name = ensure.string(rawInput)` - validates and returns the string
+
+### **Branded Types (`brand`)** - Nominal Tagging
+
+- **Use when**: You want two structurally-identical primitives (e.g. `UserId` vs `OrderId`) to be distinct types the compiler keeps apart
+- **Best for**: IDs, emails, money amounts, units — anywhere a bare `string`/`number` is too loose
+- **Throws**: `BrandError` when a `createBrand` validator rejects the value (`brand` never throws)
+- **Example**: `const id = brand<UserId>(row.id)` / `const toEmail = createBrand<Email>((v) => v.includes('@'))`
 
 ### **Invariant** - Generic Condition Checker
 
