@@ -24,3 +24,10 @@ export function raiseEnsureError(
 ): never {
   return raiseError(message, { name: 'EnsureError', ...opts })
 }
+
+export function raiseBrandError(
+  message: string,
+  opts: Omit<RaiseOptions, 'name'> = {},
+): never {
+  return raiseError(message, { name: 'BrandError', ...opts })
+}

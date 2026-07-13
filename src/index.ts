@@ -24,6 +24,8 @@ export {
   assertTruthy,
 } from './assert'
 
+export { type Brand, brand, createBrand, type Unbrand } from './brand'
+
 export {
   ensure,
   ensureArray,
