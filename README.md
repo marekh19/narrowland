@@ -73,7 +73,7 @@ invariant(user.age >= 18, 'User must be an adult')
 Type guards return `boolean` and narrow types without throwing errors. **Safer than assertions** because they don't throw.
 
 | Function | Type Guard | Description |
-|----------|------------|-------------|
+| ---------- | ------------ | ------------- |
 | `is.defined(value)` | `value is NonNullable<T>` | Checks if value is not null or undefined |
 | `is.notNull(value)` | `value is Exclude<T, null>` | Checks if value is not null |
 | `is.truthy(value)` | `value is Exclude<T, false \| 0 \| '' \| null \| undefined>` | Checks if value is truthy |
@@ -101,7 +101,7 @@ Type guards return `boolean` and narrow types without throwing errors. **Safer t
 Assertions throw errors for invalid types and narrow types in the same scope. **Use when you expect the value to be valid**.
 
 | Function | Assertion | Description |
-|----------|-----------|-------------|
+| ---------- | ----------- | ------------- |
 | `assert.defined(value, message?)` | `asserts value is NonNullable<T>` | Throws if value is null or undefined |
 | `assert.notNull(value, message?)` | `asserts value is Exclude<T, null>` | Throws if value is null |
 | `assert.truthy(value, message?)` | `asserts value is Exclude<T, false \| 0 \| '' \| null \| undefined>` | Throws if value is falsy |
@@ -130,7 +130,7 @@ Assertions throw errors for invalid types and narrow types in the same scope. **
 Ensure functions validate a value and **return the narrowed value** directly, throwing `EnsureError` on failure. They combine the check and return into a single expression — ideal for inline assignments and pipelines.
 
 | Function | Return Type | Description |
-|----------|-------------|-------------|
+| ---------- | ------------- | ------------- |
 | `ensure.defined(value, message?)` | `NonNullable<T>` | Returns value or throws if null/undefined |
 | `ensure.notNull(value, message?)` | `Exclude<T, null>` | Returns value or throws if null |
 | `ensure.truthy(value, message?)` | `Exclude<T, false \| 0 \| '' \| null \| undefined>` | Returns value or throws if falsy |
@@ -156,7 +156,7 @@ Ensure functions validate a value and **return the narrowed value** directly, th
 Branded (nominal) types tag a base type so two structurally-identical values — say a `UserId` and an `OrderId`, both strings — can't be passed where the other is expected. `brand` casts a trusted value; `createBrand` builds a reusable constructor that validates first and throws `BrandError` on failure. Existing type guards (e.g. `isNonEmptyString`) work as validators.
 
 | Export | Kind | Description |
-|--------|------|-------------|
+| -------- | ------ | ------------- |
 | `Brand<T, B>` | type | Base type `T` tagged with the string literal brand `B` (e.g. `Brand<string, 'Email'>`, `Brand<number, 'Cents'>`) |
 | `Unbrand<T>` | type | Recovers the base type of a brand (`Unbrand<Email>` is `string`); passes non-branded types through |
 | `brand<T>(value)` | function | Casts a trusted, already-valid value to its branded type — no runtime check |
@@ -188,7 +188,7 @@ sendMail(id) // ❌ type error — UserId is not an Email, even though both are 
 ### Invariant Utilities
 
 | Function | Return Type | Description |
-|----------|-------------|-------------|
+| ---------- | ------------- | ------------- |
 | `ensure(value, message?)` ⚠️ | `NonNullable<T>` | Calling `ensure` as a function is deprecated — use `ensure.defined` instead. In v2.0.0, the call signature will be removed. |
 | `invariant(condition, message?)` | `asserts condition` | Throws if condition is falsy (generic condition checker) |
 | `raiseError(message, options?)` | `never` | Throws error with custom name/code/cause (most flexible) |
@@ -447,9 +447,10 @@ handlers[key]() // Safe to call
 
 ## 📊 Bundle Size
 
-- **Size**: 1.23kB (minified + brotli)
+- **Full API**: 1.61 kB (minified + Brotli)
+- **Individual type guards**: ~600 B (minified + Brotli)
 - **Dependencies**: 0
-- **Tree-shakeable**: ✅ (import individual functions)
+- **Tree-shakeable**: ✅ (`ensureString` and a group of common type guards are checked)
 - **ESM + CJS**: ✅
 
 ## 🛠️ Development
